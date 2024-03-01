@@ -8,24 +8,22 @@
   justify-content: space-between;
 }
 
-.app-header h1.logo {
-  flex-grow: 1;
-  font-weight: 600;
-}
-
-.app-header section.container > section {
-  flex-grow: 1;
-}
-
 .app-header img {
-  padding: 8px;
+  padding: 2px;
   margin: 2px;
 }
 .app-header .header-icon {
   border-radius: 50%;
+  justify-self: center;
+  align-self: center;
 }
 
 .app-header .header-icon:hover {
   background-color: #bdbaba;
   cursor: pointer;
+}
+.app-header .header-left-side {
+  display: flex;
+  align-items: center;
+  justify-content: start;
 }

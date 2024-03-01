@@ -13,17 +13,21 @@ const icons = [
   { src: user, alt: "user" },
 ];
 
-export function AppHeader() {
+export function AppHeader(HandleMenuClick) {
   return (
     <header className="app-header">
-      <div>
-        <img src={menuSvg} alt="menu" className="header-icon" />
+      <div className="header-left-side">
+        <img
+          src={menuSvg}
+          alt="menu"
+          className="header-icon"
+          onClick={HandleMenuClick}
+        />
         <NavLink to="/EmailIndex">
-          {" "}
           <img src={logo} alt="logo" className="header-logo" />
         </NavLink>
       </div>
-      <div>
+      <div className="header-right-side">
         {icons.map((icon, index) => {
           return (
             <img

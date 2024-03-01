@@ -1,28 +1,31 @@
 .app-header {
-    background: #e91e63;
-    color: white;
-
+  padding: 8px;
 }
 
-.app-header section.container {
-    display: flex;
-    align-items: center;
-
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .app-header h1.logo {
-    flex-grow: 1;
-    font-weight: 600;
+  flex-grow: 1;
+  font-weight: 600;
 }
 
-.app-header .back {
-    flex-grow: 1;
+.app-header section.container > section {
+  flex-grow: 1;
 }
 
-.app-header nav a:not(:last-child) {
-    margin-right: 10px;
+.app-header img {
+  padding: 8px;
+  margin: 2px;
+}
+.app-header .header-icon {
+  border-radius: 50%;
 }
 
-.app-header section.container>section {
-    flex-grow: 1;
+.app-header .header-icon:hover {
+  background-color: #bdbaba;
+  cursor: pointer;
 }

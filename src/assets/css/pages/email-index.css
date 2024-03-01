@@ -1,0 +1,28 @@
+.email-index {
+  display: grid;
+}
+/* Gmail-like styles */
+.email-index {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.email-sidebar {
+  flex: 0 0 auto;
+  width: 200px;
+  padding: 20px;
+}
+
+.email-list-container {
+  flex: 1;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+/* Email list styles */
+.email-list {
+  list-style-type: none;
+  padding: 0;
+}

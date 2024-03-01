@@ -18,7 +18,10 @@ export function AppHeader() {
     <header className="app-header">
       <div>
         <img src={menuSvg} alt="menu" className="header-icon" />
-        <img src={logo} alt="logo" />
+        <NavLink to="/EmailIndex">
+          {" "}
+          <img src={logo} alt="logo" className="header-logo" />
+        </NavLink>
       </div>
       <div>
         {icons.map((icon, index) => {

@@ -22,12 +22,7 @@ markdown
 Copy code
 
 ## Usage
-1. Start the development server:
-npm start
-
-markdown
-Copy code
-2. Open your browser and go to `http://localhost:3000` to view the app.
+1. 
 
 ## Features
 - Display a list of emails with options to mark as read/unread, star/unstar, and remove.

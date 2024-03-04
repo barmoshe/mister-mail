@@ -1,4 +1,4 @@
-# Project Name
+# MisterMail
 
 ## Description
 This project is a Gmail frontend clone built with React. It includes features such as displaying a list of emails, email details view, and basic navigation. Users can view, star, and remove emails.
@@ -38,8 +38,6 @@ This project is a Gmail frontend clone built with React. It includes features su
 - HTML/CSS
 - npm (Node Package Manager)
 
-## Contributing
-Contributions are welcome! Feel free to submit pull requests or open issues for any bugs or feature requests.
 
 
 ## Credits

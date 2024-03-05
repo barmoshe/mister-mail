@@ -7,7 +7,7 @@ export const emailService = {
   remove,
   save,
   createEmail,
-
+  markAsRead,
   getDefaultFilter,
 };
 const STORAGE_KEY = "emails_db";
@@ -66,6 +66,21 @@ function getDefaultFilter() {
     isRead: "all",
     isStarred: "all",
   };
+}
+async function markAsRead(emailId) {
+  try {
+    const email = await getById(emailId);
+    if (email) {
+      email.isRead = true;
+      await save(email);
+      return email;
+    } else {
+      throw new Error("Email not found");
+    }
+  } catch (error) {
+    console.error("Error marking email as read:", error);
+    throw error;
+  }
 }
 
 function _createEmails() {

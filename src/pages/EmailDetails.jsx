@@ -17,6 +17,7 @@ export function EmailDetails() {
 
   useEffect(() => {
     loadEmail();
+    emailService.markAsRead(params.emailId);
   }, [params.emailId]);
 
   async function loadEmail() {
@@ -31,6 +32,7 @@ export function EmailDetails() {
 
   console.log("params", params);
   if (!email) return <div>Loading..</div>;
+
   return (
     <section className="email-index">
       <SideBar />

@@ -1,9 +1,11 @@
 import { HomePage } from "./pages/HomePage.jsx";
 import { EmailIndex } from "./pages/EmailIndex.jsx";
+import { EmailDetails } from "./pages/EmailDetails.jsx";
 import { AppHeader } from "./cmps/AppHeader.jsx";
 import { Route, HashRouter as Router, Routes } from "react-router-dom";
-
+import { useState } from "react";
 export function App() {
+  //gmail fronted clone
   return (
     <Router>
       <AppHeader />
@@ -12,12 +14,8 @@ export function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<h1>about</h1>} />
-            <Route path="/EmailIndex" element={<EmailIndex />}>
-              <Route
-                path="/EmailIndex/:emailId"
-                element={<h1>email details</h1>}
-              />
-            </Route>
+            <Route path="/EmailIndex" element={<EmailIndex />} />
+            <Route path="/email/:emailId" element={<EmailDetails />} />
           </Routes>
         </main>
       </section>

@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { eventBusService } from "../services/event-bus.service";
 
 // <EmailFilter> - allow the user to filter the emails by  subject&body , read/unread,star/unstar
 
 export function EmailFilter({ filterBy, onSetFilter }) {
   const [filterByToEdit, setFilterByToEdit] = useState(filterBy);
-  console.log(filterByToEdit, "1filterByToEdit");
-  console.log(filterBy, "1filterBy");
+
+  useEffect(() => {
+    const unsubscribe = eventBusService.on("filter-by-text", (text) => {
+      setFilterByToEdit({ ...filterByToEdit, text });
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [filterByToEdit]);
 
   useEffect(() => {
     onSetFilter(filterByToEdit);
@@ -20,12 +28,6 @@ export function EmailFilter({ filterBy, onSetFilter }) {
   //filter form attributes :  subject&body- text input , read/unread- select input,star /unstar- select input
   return (
     <form className="email-filter">
-      <input
-        type="text"
-        name="text"
-        value={filterByToEdit.text}
-        onChange={handleChange}
-      />
       <select
         name="isRead"
         value={filterByToEdit.isRead}

@@ -77,3 +77,6 @@ export function showErrorMsg(txt) {
 export function toggleSidebar() {
   eventBusService.emit("toggle-sidebar");
 }
+export function filterByText(text) {
+  eventBusService.emit("filter-by-text", text);
+}

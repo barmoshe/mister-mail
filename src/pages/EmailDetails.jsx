@@ -34,21 +34,19 @@ export function EmailDetails() {
   if (!email) return <div>Loading..</div>;
 
   return (
-    <section className="email-index">
-      <section className="email-details">
-        <div className="email-details-toolbar">
-          <h3>Tool bar</h3>
-        </div>
-        <div className="email-details-header">
-          <h2>{email.subject}</h2>
-          <h3>{email.sentAt}</h3>
-          <h3>{email.from}</h3>
-        </div>
-        <div className="email-details-body">
-          <h3>{email.body}</h3>
-          <Link to="/EmailIndex">Go back</Link>
-        </div>
-      </section>
+    <section className="email-details">
+      <div className="email-details-toolbar">
+        <h3>Tool bar</h3>
+      </div>
+      <div className="email-details-header">
+        <h2>{email.subject}</h2>
+        <h3>{email.sentAt}</h3>
+        <h3>{email.from}</h3>
+      </div>
+      <div className="email-details-body">
+        <h3>{email.body}</h3>
+        <Link to="/EmailIndex">Go back</Link>
+      </div>
     </section>
   );
 }

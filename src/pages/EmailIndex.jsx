@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { emailService } from "./../services/email.service.js";
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
-import { SideBar } from "./../cmps/SideBar.jsx";
-import { AppHeader } from "./../cmps/AppHeader.jsx";
 
 // const loggedinUser = {
 //   email: "user@appsus.com",

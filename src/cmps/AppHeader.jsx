@@ -6,6 +6,7 @@ import settings from "../assets/imgs/settings.svg";
 import apps from "../assets/imgs/apps.svg";
 import user from "../assets/imgs/user.svg";
 import { toggleSidebar } from "../services/event-bus.service";
+import { filterByText } from "../services/event-bus.service";
 
 const icons = [
   { src: support, alt: "help" },
@@ -18,6 +19,9 @@ export function AppHeader() {
   function handleMenuClick() {
     toggleSidebar();
   }
+  function handleSearch(ev) {
+    filterByText(ev.target.value);
+  }
   return (
     <header className="app-header">
       <div className="menu-logo-container">
@@ -27,12 +31,12 @@ export function AppHeader() {
           className="header-icon"
           onClick={() => handleMenuClick()}
         />
-        <NavLink to="/EmailIndex">
+        <NavLink to="/emails">
           <img src={logo} alt="logo" className="header-logo" />
         </NavLink>
       </div>
       <form className="search-bar">
-        <input type="text" name="text" />
+        <input type="text" name="text" onChange={handleSearch} />
       </form>
       <div className="header-right-side">
         {icons.map((icon, index) => {

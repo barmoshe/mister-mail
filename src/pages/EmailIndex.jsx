@@ -3,6 +3,7 @@ import { emailService } from "./../services/email.service.js";
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
 import { SideBar } from "./../cmps/SideBar.jsx";
+import { AppHeader } from "./../cmps/AppHeader.jsx";
 
 // const loggedinUser = {
 //   email: "user@appsus.com",
@@ -12,7 +13,6 @@ import { SideBar } from "./../cmps/SideBar.jsx";
 export function EmailIndex() {
   const [emails, setEmails] = useState(null);
   const [filterBy, setFilterBy] = useState(emailService.getDefaultFilter());
-  console.log(filterBy);
 
   useEffect(() => {
     loadEmails();
@@ -54,7 +54,6 @@ export function EmailIndex() {
   if (!emails) return <div>Loading..</div>; //todo: add loader
   return (
     <section className="email-index">
-      <SideBar />
       <div className="email-list-container">
         <EmailFilter filterBy={filterBy} onSetFilter={onSetFilter} />
         <EmailList

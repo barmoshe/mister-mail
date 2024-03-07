@@ -1,29 +1,55 @@
 .app-header {
-  padding: 8px;
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* Three columns: logo, search bar, icons */
+  align-items: center; /* Align items vertically */
+  grid-column: 1/-1; /* Extend across all columns */
+  grid-row: 1; /* Occupies first row */
+  gap: 10px; /* Spacing between grid items */
+  padding: 10px; /* Add padding */
 }
 
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.menu-logo-container {
+  display: flex; /* Align menu and logo horizontally */
+  align-items: center; /* Align items vertically */
+  gap: 5px; /* Spacing between items */
 }
 
-.app-header img {
-  padding: 2px;
-  margin: 2px;
-}
-.app-header .header-icon {
-  border-radius: 50%;
-  justify-self: center;
-  align-self: center;
+.header-icon {
+  width: 30px; /* Adjust icon size */
+  height: 30px;
+  border-radius: 50%; /* Make icon circular */
 }
 
-.app-header .header-icon:hover {
+.header-logo {
+  width: 100px; /* Adjust logo size */
+  height: auto;
+}
+
+.search-bar {
+  grid-column: 2; /* Search bar spans second column */
+  display: flex; /* Use flexbox */
+  justify-content: center; /* Center content horizontally */
+  position: relative; /* Position input relative to allow absolute positioning of icon */
+}
+
+.search-bar input[type="text"] {
+  width: 75%; /* Occupy full width */
+  padding: 8px; /* Adjust padding */
+  border-radius: 20px; /* Rounded corners */
+  border: 1px solid #ccc; /* Add border */
+  outline: none; /* Remove default focus outline */
+}
+.header-right-side {
+  display: flex; /* Align icons horizontally */
+  justify-content: flex-end; /* Align icons to the right */
+  gap: 10px; /* Spacing between icons */
+}
+.search-bar input[type="text"]:hover {
+  background-color: #f0f0f0; /* Change background color on hover */
+}
+
+.header-icon:hover {
   background-color: #bdbaba;
+
   cursor: pointer;
-}
-.app-header .header-left-side {
-  display: flex;
-  align-items: center;
-  justify-content: start;
 }

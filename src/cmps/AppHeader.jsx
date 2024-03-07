@@ -16,12 +16,15 @@ const icons = [
 export function AppHeader() {
   return (
     <header className="app-header">
-      <div className="header-left-side">
+      <div className="menu-logo-container">
         <img src={menuSvg} alt="menu" className="header-icon" />
         <NavLink to="/EmailIndex">
           <img src={logo} alt="logo" className="header-logo" />
         </NavLink>
       </div>
+      <form className="search-bar">
+        <input type="text" name="text" />
+      </form>
       <div className="header-right-side">
         {icons.map((icon, index) => {
           return (

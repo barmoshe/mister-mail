@@ -1,0 +1,53 @@
+.app-sidebar {
+  display: grid;
+  grid-template-rows: auto auto 1fr; /* Three rows: actions, folders, labels */
+  grid-template-columns: 1fr; /* Single column */
+  height: 100%; /* Ensure the sidebar takes full height */
+  padding: 10px; /* Add padding */
+}
+
+.sidebar-actions {
+  padding: 10px;
+}
+
+.compose-btn {
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sidebar-folders {
+  display: grid;
+  grid-auto-rows: min-content; /* Automatically size rows based on content */
+  gap: 1px; /* Spacing between grid items */
+}
+
+.folder {
+  display: grid;
+  grid-template-columns: auto 1fr; /* Two columns: icon, name */
+  align-items: center; /* Align items vertically */
+  gap: 10px; /* Spacing between grid items */
+  padding: 8px 10px; /* Add padding */
+  border-radius: 25px; /* Rounded corners */
+  cursor: pointer; /* Change cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.folder:hover {
+  background-color: #ebebeb; /* Light gray background on hover */
+}
+
+.folder-icon {
+  width: 24px; /* Adjust icon size */
+  height: 24px;
+}
+
+.folder-name {
+  margin: 0; /* Remove default margin */
+}
+.folder.open {
+  background-color: #a0accd; /* Light blue background for open folder */
+}

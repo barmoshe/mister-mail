@@ -2,14 +2,15 @@ import { HomePage } from "./pages/HomePage.jsx";
 import { EmailIndex } from "./pages/EmailIndex.jsx";
 import { EmailDetails } from "./pages/EmailDetails.jsx";
 import { AppHeader } from "./cmps/AppHeader.jsx";
+import { SideBar } from "./cmps/SideBar.jsx";
 import { Route, HashRouter as Router, Routes } from "react-router-dom";
-import { useState } from "react";
 export function App() {
   //gmail fronted clone
   return (
     <Router>
-      <AppHeader />
-      <section className="main-app">
+      <section className="main-layout">
+        <AppHeader />
+        <SideBar />
         <main className="container">
           <Routes>
             <Route path="/" element={<HomePage />} />

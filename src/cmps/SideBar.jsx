@@ -14,9 +14,10 @@ const folders = [
   { name: "Drafts", icon: <FaRegFileAlt /> },
   { name: "Trash", icon: <FaTrash /> },
 ];
+const labels = [{ name: "Label1" }, { name: "Label2" }, { name: "Label3" }];
 
 export function SideBar() {
-  const [openFolder, setOpenFolder] = useState(folders[0].name);
+  const [openedItem, setOpenedItem] = useState(folders[0].name);
   return (
     <section className="app-sidebar">
       <div className="sidebar-actions">
@@ -27,7 +28,7 @@ export function SideBar() {
           return (
             <div
               key={index}
-              className={`folder ${openFolder === folder.name ? "open" : ""}`}
+              className={`folder ${openedItem === folder.name ? "open" : ""}`}
             >
               <div className="folder-icon">{folder.icon}</div>
               <div className="folder-name">
@@ -37,11 +38,18 @@ export function SideBar() {
           );
         })}
       </div>
-      <div className="sidebar-labels">
-        <h3>Label1 </h3>
-        <h3>Label2 </h3>
-        <h3>Label3 </h3>
-      </div>
+      {/* <div className="sidebar-labels">
+        {labels.map((label, index) => {
+          return (
+            <div
+              key={index}
+              className={`label ${openedItem === label.name ? "open" : ""}`}
+            >
+              <h3>{label.name}</h3>
+            </div>
+          );
+        })}
+      </div> */}
     </section>
   );
 }

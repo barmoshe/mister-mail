@@ -30,7 +30,6 @@
   grid-template-columns: auto 1fr; /* Two columns: icon, name */
   align-items: center; /* Align items vertically */
   gap: 10px; /* Spacing between grid items */
-  padding: 8px 10px; /* Add padding */
   border-radius: 25px; /* Rounded corners */
   cursor: pointer; /* Change cursor on hover */
   transition: background-color 0.3s; /* Smooth transition */
@@ -43,11 +42,15 @@
 .folder-icon {
   width: 24px; /* Adjust icon size */
   height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .folder-name {
   margin: 0; /* Remove default margin */
 }
+.label.open,
 .folder.open {
   background-color: #a0accd; /* Light blue background for open folder */
 }

@@ -5,6 +5,7 @@ import support from "../assets/imgs/question_mark.svg";
 import settings from "../assets/imgs/settings.svg";
 import apps from "../assets/imgs/apps.svg";
 import user from "../assets/imgs/user.svg";
+import { toggleSidebar } from "../services/event-bus.service";
 
 const icons = [
   { src: support, alt: "help" },
@@ -14,10 +15,18 @@ const icons = [
 ];
 
 export function AppHeader() {
+  function handleMenuClick() {
+    toggleSidebar();
+  }
   return (
     <header className="app-header">
       <div className="menu-logo-container">
-        <img src={menuSvg} alt="menu" className="header-icon" />
+        <img
+          src={menuSvg}
+          alt="menu"
+          className="header-icon"
+          onClick={() => handleMenuClick()}
+        />
         <NavLink to="/EmailIndex">
           <img src={logo} alt="logo" className="header-logo" />
         </NavLink>

@@ -4,6 +4,11 @@
   grid-template-columns: 1fr; /* Single column */
   height: 100%; /* Ensure the sidebar takes full height */
   padding: 10px; /* Add padding */
+  max-width: min-content; /* Minimum width */
+}
+.app-sidebar .closed {
+  grid-template-columns: min-content;
+  min-width: 50px;
 }
 
 .sidebar-actions {
@@ -25,16 +30,20 @@
   gap: 1px; /* Spacing between grid items */
 }
 
-.folder {
+.app-sidebar .folder {
   display: grid;
-  grid-template-columns: auto 1fr; /* Two columns: icon, name */
+  grid-template-columns: min-content 1fr; /* Two columns: icon, name */
   align-items: center; /* Align items vertically */
   gap: 10px; /* Spacing between grid items */
   border-radius: 25px; /* Rounded corners */
   cursor: pointer; /* Change cursor on hover */
   transition: background-color 0.3s; /* Smooth transition */
 }
-
+.app-sidebar.closed .folder {
+  grid-template-columns: min-content;
+  max-width: 24px;
+  place-self: center;
+}
 .folder:hover {
   background-color: #ebebeb; /* Light gray background on hover */
 }

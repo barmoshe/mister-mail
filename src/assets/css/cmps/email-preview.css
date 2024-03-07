@@ -1,0 +1,15 @@
+.email-preview {
+  display: grid;
+  grid-template-columns: 1fr 2fr 4fr 1fr; /* Four columns: from, subject, body-prefix, and date */
+  align-items: center; /* Align items vertically */
+  gap: 5px; /* Spacing between grid items */
+}
+
+.email-preview .date {
+  justify-self: end; /* Align "date" text to the right */
+}
+.email-preview * {
+  white-space: nowrap; /* Prevent wrapping of text */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Add ellipsis (...) to overflow text */
+}

@@ -35,8 +35,6 @@ export function EmailDetails() {
 
   return (
     <section className="email-index">
-      <SideBar />
-
       <section className="email-details">
         <div className="email-details-toolbar">
           <h3>Tool bar</h3>

@@ -1,6 +1,6 @@
 .main-layout {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: min-content auto;
   grid-template-rows: min-content auto;
   height: 100vh;
 }

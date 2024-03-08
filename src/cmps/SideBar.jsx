@@ -8,6 +8,7 @@ import {
   FaRegFileAlt,
   FaTrash,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const folders = [
   { name: "Inbox", icon: <FaInbox /> },
@@ -22,6 +23,7 @@ export function SideBar() {
   const [openedItem, setOpenedItem] = useState(folders[0].name);
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
+  const navigate = useNavigate();
   useEffect(() => {
     const unsubscribe = eventBusService.on("toggle-sidebar", () => {
       setIsSideBarOpen(!isSideBarOpen);
@@ -33,6 +35,7 @@ export function SideBar() {
 
   function handleFolderClick(folderName) {
     setOpenedItem(folderName);
+    navigate(`/emails/${folderName}`);
   }
   switch (isSideBarOpen) {
     case true:

@@ -16,8 +16,12 @@ export function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<h1>about</h1>} />
             <Route path="/emails" element={<EmailIndex />} />
-            <Route path="/emails/:folder" element={<EmailIndex />} />
-            <Route path="/email/:emailId" element={<EmailDetails />} />
+            <Route path="/emails/:folder" element={<EmailIndex />}>
+              <Route
+                path="/emails/:folder/:emailId"
+                element={<EmailDetails />}
+              />
+            </Route>
           </Routes>
         </main>
       </section>

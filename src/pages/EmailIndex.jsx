@@ -2,18 +2,33 @@ import { useEffect, useState } from "react";
 import { emailService } from "./../services/email.service.js";
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
+import { Outlet, useParams, useNavigate } from "react-router-dom";
 
-// const loggedinUser = {
-//   email: "user@appsus.com",
-//   fullname: "Mahatma Appsus",
-// };
+const loggedinUser = {
+  email: "user@appsus.com",
+  fullname: "Mahatma Appsus",
+};
 
 export function EmailIndex() {
   const [emails, setEmails] = useState(null);
   const [filterBy, setFilterBy] = useState(emailService.getDefaultFilter());
+  const params = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!params.folder) {
+      navigate("/emails/inbox");
+    }
+    // modifyFilterByFolder(params.folder);
+  }, [params.folder]);
+
+  useEffect(() => {
+    console.log("Params changed to:", params);
+  }, [params]);
 
   useEffect(() => {
     loadEmails();
+    console.log("FilterBy changed to:", filterBy);
   }, [filterBy]);
 
   async function loadEmails() {
@@ -49,8 +64,11 @@ export function EmailIndex() {
       console.log("Error in onUpdateEmail", err);
     }
   }
+
   if (!emails) return <div>Loading..</div>; //todo: add loader
-  return (
+  return params.emailId ? (
+    <Outlet />
+  ) : (
     <section className="email-index">
       <div className="email-list-container">
         <EmailFilter filterBy={filterBy} onSetFilter={onSetFilter} />

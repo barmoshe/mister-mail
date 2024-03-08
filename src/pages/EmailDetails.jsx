@@ -25,12 +25,11 @@ export function EmailDetails() {
       const email = await emailService.getById(params.emailId);
       setEmail(email);
     } catch (err) {
-      navigate("/EmailIndex");
+      navigate("/emails");
       console.log("Error in loadEmail", err);
     }
   }
 
-  console.log("params", params);
   if (!email) return <div>Loading..</div>;
 
   return (
@@ -45,7 +44,7 @@ export function EmailDetails() {
       </div>
       <div className="email-details-body">
         <h3>{email.body}</h3>
-        <Link to="/EmailIndex">Go back</Link>
+        <Link to="/emails">Go back</Link>
       </div>
     </section>
   );

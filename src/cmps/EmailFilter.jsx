@@ -37,15 +37,6 @@ export function EmailFilter({ filterBy, onSetFilter }) {
         <option value="true">Read</option>
         <option value="false">Unread</option>
       </select>
-      <select
-        name="isStarred"
-        value={filterByToEdit.isStarred}
-        onChange={handleChange}
-      >
-        <option value="all">All</option>
-        <option value="true">Starred</option>
-        <option value="false">Unstarred</option>
-      </select>
     </form>
   );
 }

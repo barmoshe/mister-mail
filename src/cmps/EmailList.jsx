@@ -1,8 +1,9 @@
 import { EmailPreview } from "./EmailPreview.jsx";
 import { FaRegStar as Star } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export function EmailList({ emails, onRemoveEmail, updateEmail }) {
+  const location = useLocation();
   function className(email) {
     return email.isRead
       ? "email-preview-container"
@@ -36,7 +37,7 @@ export function EmailList({ emails, onRemoveEmail, updateEmail }) {
               <Star />
             </button>
           </div>
-          <Link to={`/email/${email.id}`}>
+          <Link to={`${location.pathname}/${email.id}`}>
             <EmailPreview email={email} />
           </Link>
         </article>

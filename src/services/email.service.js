@@ -187,8 +187,7 @@ function _filter(emails, filterBy) {
       (subject.includes(text) ||
         body.includes(text) ||
         from.includes(text) ||
-        to.includes(text) ||
-        from.includes(from)) &&
+        to.includes(text)) &&
       (isRead === "all" || email.isRead.toString() === isRead) &&
       (isStarred === "all" || email.isStarred.toString() === isStarred)
     );

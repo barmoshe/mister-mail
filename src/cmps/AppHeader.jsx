@@ -6,7 +6,7 @@ import logo from "../assets/imgs/MisterMail-logo.png";
 import menuSvg from "../assets/imgs/menu.svg";
 import support from "../assets/imgs/question_mark.svg";
 import settings from "../assets/imgs/settings.svg";
-s;
+
 import apps from "../assets/imgs/apps.svg";
 import user from "../assets/imgs/user.svg";
 

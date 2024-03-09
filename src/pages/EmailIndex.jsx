@@ -1,36 +1,36 @@
 import { useEffect, useState } from "react";
-import { Outlet, useParams, useNavigate } from "react-router-dom";
+import {
+  Outlet,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
 import { emailService } from "./../services/email.service.js";
 
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
 
-const loggedinUser = {
-  email: "user@appsus.com",
-  fullname: "Mahatma Appsus",
-};
-
 export function EmailIndex() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const params = useParams();
+
   const [emails, setEmails] = useState(null);
   const [filterBy, setFilterBy] = useState(emailService.getDefaultFilter());
-  const params = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!params.folder) {
       navigate("/emails/inbox");
     }
-    // modifyFilterByFolder(params.folder);
-  }, [params.folder]);
-
-  useEffect(() => {
     console.log("Params changed to:", params);
+    // modifyFilterByFolder(params.folder);
   }, [params]);
 
   useEffect(() => {
     loadEmails();
     console.log("FilterBy changed to:", filterBy);
+    setSearchParams(filterBy);
   }, [filterBy]);
 
   async function loadEmails() {

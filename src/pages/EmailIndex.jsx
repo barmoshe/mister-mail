@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { Outlet, useParams, useNavigate } from "react-router-dom";
+
 import { emailService } from "./../services/email.service.js";
+
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
-import { Outlet, useParams, useNavigate } from "react-router-dom";
 
 const loggedinUser = {
   email: "user@appsus.com",

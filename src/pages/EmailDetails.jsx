@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import { SideBar } from "../cmps/SideBar";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import { emailService } from "../services/email.service";
-{
-  /* <Route
-path="/EmailIndex/:emailId"
-element={<h1>email details</h1>}
-/> */
-}
+
 export function EmailDetails() {
   const [email, setEmail] = useState(null);
   const params = useParams();

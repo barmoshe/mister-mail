@@ -1,9 +1,11 @@
+import { Route, HashRouter as Router, Routes } from "react-router-dom";
+
 import { HomePage } from "./pages/HomePage.jsx";
 import { EmailIndex } from "./pages/EmailIndex.jsx";
 import { EmailDetails } from "./pages/EmailDetails.jsx";
+
 import { AppHeader } from "./cmps/AppHeader.jsx";
 import { SideBar } from "./cmps/SideBar.jsx";
-import { Route, HashRouter as Router, Routes } from "react-router-dom";
 export function App() {
   //gmail fronted clone
   return (

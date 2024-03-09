@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { eventBusService } from "../services/event-bus.service";
 
-// <EmailFilter> - allow the user to filter the emails by  subject&body , read/unread,star/unstar
-
 export function EmailFilter({ filterBy, onSetFilter }) {
   const [filterByToEdit, setFilterByToEdit] = useState(filterBy);
 

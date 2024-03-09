@@ -1,6 +1,8 @@
-import { EmailPreview } from "./EmailPreview.jsx";
-import { FaRegStar as Star } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
+
+import { EmailPreview } from "./EmailPreview.jsx";
+
+import { FaRegStar as Star } from "react-icons/fa6";
 
 export function EmailList({ emails, onRemoveEmail, updateEmail }) {
   const location = useLocation();

@@ -23,6 +23,9 @@ export function EmailDetails() {
       console.log("Error in loadEmail", err);
     }
   }
+  async function handleBack() {
+    navigate(-1);
+  }
 
   if (!email) return <div>Loading..</div>;
 
@@ -38,7 +41,7 @@ export function EmailDetails() {
       </div>
       <div className="email-details-body">
         <h3>{email.body}</h3>
-        <Link to="/emails">Go back</Link>
+        <button onClick={() => handleBack()}>Back</button>
       </div>
     </section>
   );

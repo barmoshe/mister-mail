@@ -23,9 +23,10 @@ export function EmailIndex() {
     if (!params.folder) {
       navigate("/emails/inbox");
     }
+    setSearchParams(filterBy);
     console.log("Params changed to:", params);
     // modifyFilterByFolder(params.folder);
-  }, [params]);
+  }, [params.folder]);
 
   useEffect(() => {
     loadEmails();

@@ -16,3 +16,16 @@
   grid-auto-rows: min-content; /* Automatically size rows based on content */
   gap: 2px; /* Spacing between grid items */
 }
+
+.progress-bar {
+  width: 100%;
+  height: 20px; /* Adjust height as needed */
+  background-color: #f0f0f0; /* Background color of the progress bar container */
+  border-radius: 4px; /* Adjust border radius as needed */
+  overflow: hidden; /* Ensures the inner progress bar stays within the container */
+}
+
+.progress-bar-inner {
+  height: 100%;
+  background-color: #007bff; /* Color of the progress bar */
+}

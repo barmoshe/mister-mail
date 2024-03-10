@@ -10,6 +10,13 @@ import { emailService } from "./../services/email.service.js";
 
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
+import { ProgressBar } from "./../cmps/ProgressBar.jsx";
+
+function calcUnreadEmails({ emails }) {
+  return emails.reduce((acc, email) => {
+    return email.isRead ? acc : acc + 1;
+  }, 0);
+}
 
 export function EmailIndex() {
   const params = useParams();
@@ -20,6 +27,8 @@ export function EmailIndex() {
     emailService.getDefaultFilter(params.folder)
   );
   const [sortBy, setSortBy] = useState("sentAt");
+  console.log(emails);
+  const [unreadEmails, setUnreadEmails] = useState(0);
 
   useEffect(() => {
     if (params.folder) {
@@ -29,6 +38,7 @@ export function EmailIndex() {
 
   useEffect(() => {
     loadEmails();
+    setUnreadEmails(calcUnreadEmails({ emails }));
   }, [filterBy, sortBy]);
 
   async function loadEmails() {
@@ -96,6 +106,7 @@ export function EmailIndex() {
           updateEmail={onUpdateEmail}
         />
       </div>
+      <ProgressBar value={unreadEmails} max={emails.length} />
     </section>
   );
 }

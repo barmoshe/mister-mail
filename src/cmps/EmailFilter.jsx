@@ -37,7 +37,8 @@ export function EmailFilter({ filterBy, onSetFilter, sortBy, onSetSort }) {
 
   return (
     <div className="emails-actions">
-      <form className="email-filter">
+      <div className="email-filter">
+        <span>Filter:</span>
         <select
           name="isRead"
           value={filterByToEdit.isRead}
@@ -47,13 +48,15 @@ export function EmailFilter({ filterBy, onSetFilter, sortBy, onSetSort }) {
           <option value="true">Read</option>
           <option value="false">Unread</option>
         </select>
-      </form>
-      <form className="email-sort">
+      </div>
+      <div className="toolbar-divider"></div>
+      <div className="email-sort">
+        <span>Sort by:</span>
         <select name="sortBy" value={sortBy} onChange={handleSortChange}>
           <option value="sentAt">Date</option>
           <option value="subject">Subject</option>
         </select>
-      </form>
+      </div>
     </div>
   );
 }

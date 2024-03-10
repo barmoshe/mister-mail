@@ -1,0 +1,35 @@
+.emails-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.email-filter,
+.email-sort {
+  display: flex;
+  align-items: center;
+}
+
+.email-filter select,
+.email-sort select {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.email-filter select:focus,
+.email-sort select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.toolbar-divider {
+  margin: 0 10px;
+  height: 100%;
+  border-right: 1px solid #ccc;
+}

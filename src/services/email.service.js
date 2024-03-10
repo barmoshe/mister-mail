@@ -1,7 +1,7 @@
 import { storageService } from "./async-storage.service.js";
 import { utilService } from "./util.service.js";
 const logedInUser = {
-  email: "barrr@appsus.com",
+  email: "barr@appsus.com",
   fullName: "Bar Moshe",
 };
 export const emailService = {

@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { eventBusService } from "../services/event-bus.service";
 
-export function EmailFilter({ filterBy, onSetFilter, sortBy, onSetSort }) {
+export function EmailFilter({
+  filterBy,
+  onSetFilter,
+  sortBy,
+  onSetSort,
+  progressBar,
+}) {
   const [filterByToEdit, setFilterByToEdit] = useState(filterBy);
   const [sortByToEdit, setSortByToEdit] = useState(sortBy);
 

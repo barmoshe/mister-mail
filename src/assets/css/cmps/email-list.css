@@ -54,3 +54,6 @@
 .email-preview-container:not(:hover) .remove-email {
   display: none;
 }
+.email-preview-container:hover .date {
+  display: none;
+}

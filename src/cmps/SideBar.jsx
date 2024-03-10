@@ -8,14 +8,14 @@ import {
   FaRegFileAlt,
   FaTrash,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const folders = [
-  { name: "Inbox", icon: <FaInbox /> },
-  { name: "Starred", icon: <FaStar /> },
-  { name: "Sent", icon: <FaRegPaperPlane /> },
-  { name: "Drafts", icon: <FaRegFileAlt /> },
-  { name: "Trash", icon: <FaTrash /> },
+  { name: "Inbox", path: "/emails/inbox", icon: <FaInbox /> },
+  { name: "Starred", path: "/emails/starred", icon: <FaStar /> },
+  { name: "Sent", path: "/emails/sent", icon: <FaRegPaperPlane /> },
+  { name: "Drafts", path: "/emails/drafts", icon: <FaRegFileAlt /> },
+  { name: "Trash", path: "/emails/trash", icon: <FaTrash /> },
 ];
 const labels = [{ name: "Label1" }, { name: "Label2" }, { name: "Label3" }];
 
@@ -35,8 +35,8 @@ export function SideBar() {
 
   function handleFolderClick(folderName) {
     setOpenedItem(folderName);
-    navigate(`/emails/${folderName}`);
   }
+
   switch (isSideBarOpen) {
     case true:
       return (
@@ -47,18 +47,20 @@ export function SideBar() {
           <div className="sidebar-folders">
             {folders.map((folder, index) => {
               return (
-                <div
-                  key={index}
-                  className={`folder ${
-                    openedItem === folder.name ? "open" : ""
-                  }`}
-                  onClick={() => handleFolderClick(folder.name)}
-                >
-                  <div className="folder-icon">{folder.icon}</div>
-                  <div className="folder-name">
-                    <h3>{folder.name}</h3>
+                <NavLink to={folder.path} key={index}>
+                  <div
+                    key={index}
+                    className={`folder ${
+                      openedItem === folder.name ? "open" : ""
+                    }`}
+                    onClick={() => handleFolderClick(folder.name)}
+                  >
+                    <div className="folder-icon">{folder.icon}</div>
+                    <div className="folder-name">
+                      <h3>{folder.name}</h3>
+                    </div>
                   </div>
-                </div>
+                </NavLink>
               );
             })}
           </div>
@@ -86,15 +88,17 @@ export function SideBar() {
           <div className="sidebar-folders">
             {folders.map((folder, index) => {
               return (
-                <div
-                  key={index}
-                  className={`folder ${
-                    openedItem === folder.name ? "open" : ""
-                  }`}
-                  onClick={() => handleFolderClick(folder.name)}
-                >
-                  <div className="folder-icon">{folder.icon}</div>
-                </div>
+                <NavLink to={folder.path} key={index}>
+                  <div
+                    key={index}
+                    className={`folder ${
+                      openedItem === folder.name ? "open" : ""
+                    }`}
+                    onClick={() => handleFolderClick(folder.name)}
+                  >
+                    <div className="folder-icon">{folder.icon}</div>
+                  </div>
+                </NavLink>
               );
             })}
           </div>

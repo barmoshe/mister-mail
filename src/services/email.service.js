@@ -1,6 +1,9 @@
 import { storageService } from "./async-storage.service.js";
 import { utilService } from "./util.service.js";
-
+const logedInUser = {
+  email: "barrr@appsus.com",
+  fullName: "Bar Moshe",
+};
 export const emailService = {
   query,
   getById,
@@ -60,12 +63,54 @@ function createEmail(subject = "", body = "", from = "", to = "") {
 //     sentAt: 0,
 //   };
 // }
-function getDefaultFilter() {
-  return {
-    text: "",
-    isRead: "all",
-    isStarred: "all",
-  };
+function getDefaultFilter(folder = "Inbox") {
+  switch (folder) {
+    case "inbox":
+      return {
+        text: "",
+        isRead: "all",
+        isStarred: "all",
+        isDraft: false,
+        isTrash: false,
+      };
+    case "starred":
+      return {
+        text: "",
+        isRead: "all",
+        isStarred: "true",
+        isDraft: false,
+        isTrash: false,
+      };
+    case "sent":
+      return {
+        text: "",
+        isRead: "all",
+        isStarred: "all",
+        from: logedInUser.email,
+        isDraft: false,
+        isTrash: false,
+      };
+    case "drafts":
+      return {
+        text: "",
+        isRead: "all",
+        isStarred: "all",
+        from: logedInUser.email,
+        isDraft: true,
+        isTrash: false,
+      };
+    case "trash":
+      return {
+        text: "",
+        isRead: "all",
+        isStarred: "all",
+        isDraft: false,
+        isTrash: true,
+      };
+    default:
+      console.log("Invalid folder name");
+      return {};
+  }
 }
 async function markAsRead(emailId) {
   try {
@@ -94,8 +139,10 @@ function _createEmails() {
         isRead: false,
         isStarred: true,
         sentAt: 1646361600000, // March 3, 2022
-        from: "user@appsus.com",
+        from: "barr@appsus.com",
         to: "autoMail2@gmail.com",
+        isDraft: false,
+        isTrash: false,
       },
       {
         id: "e102",
@@ -105,7 +152,9 @@ function _createEmails() {
         isStarred: false,
         sentAt: 1646179200000, // March 1, 2022
         from: "autoMail3@gmail.com",
-        to: "user@appsus.com",
+        to: "barr@appsus.com",
+        isDraft: false,
+        isTrash: false,
       },
       {
         id: "e103",
@@ -114,8 +163,10 @@ function _createEmails() {
         isRead: false,
         isStarred: false,
         sentAt: 1646256000000, // March 2, 2022
-        from: "barrr@appsus.com",
+        from: "barr@appsus.com",
         to: "autoMail3@gmail.com",
+        isDraft: false,
+        isTrash: false,
       },
       {
         id: "e104",
@@ -125,7 +176,9 @@ function _createEmails() {
         isStarred: true,
         sentAt: 1646030400000, // February 28, 2022
         from: "news@weeklydigest.com",
-        to: "user@appsus.com",
+        to: "barr@appsus.com",
+        isDraft: false,
+        isTrash: false,
       },
       {
         id: "e105",
@@ -135,7 +188,9 @@ function _createEmails() {
         isStarred: true,
         sentAt: 1646448000000, // March 4, 2022
         from: "events@exclusiveinvite.com",
-        to: "user@appsus.com",
+        to: "barr@appsus.com",
+        isDraft: false,
+        isTrash: false,
       },
       {
         id: "e106",
@@ -145,7 +200,9 @@ function _createEmails() {
         isStarred: false,
         sentAt: 1646102400000, // February 28, 2022
         from: "feedback@yourcompany.com",
-        to: "user@appsus.com",
+        to: "barr@appsus.com",
+        isDraft: false,
+        isTrash: false,
       },
       {
         id: "e107",
@@ -154,7 +211,7 @@ function _createEmails() {
         isRead: false,
         isStarred: false,
         sentAt: 1646350800000, // March 3, 2022
-        from: "webinar@eventplanner.com",
+        from: "barr@appsus.com",
         to: "user@appsus.com",
       },
       {
@@ -165,7 +222,7 @@ function _createEmails() {
         isStarred: true,
         sentAt: 1646091600000, // February 28, 2022
         from: "discover@newcollection.com",
-        to: "user@appsus.com",
+        to: "barr@appsus.com",
       },
     ];
 
@@ -174,22 +231,23 @@ function _createEmails() {
 }
 
 function _filter(emails, filterBy) {
+  const text = filterBy.text.toLowerCase();
+
   return emails.filter((email) => {
-    const text = filterBy.text.toLowerCase();
     const subject = email.subject.toLowerCase();
     const from = email.from.toLowerCase();
     const to = email.to.toLowerCase();
     const body = email.body.toLowerCase();
     const isRead = filterBy.isRead;
     const isStarred = filterBy.isStarred;
-
     return (
-      (subject.includes(text) ||
-        body.includes(text) ||
-        from.includes(text) ||
-        to.includes(text)) &&
+      (subject.includes(text) || body.includes(text)) &&
       (isRead === "all" || email.isRead.toString() === isRead) &&
-      (isStarred === "all" || email.isStarred.toString() === isStarred)
+      (isStarred === "all" || email.isStarred.toString() === isStarred) &&
+      (filterBy.from ? email.from === filterBy.from : true) &&
+      (filterBy.to ? email.to === filterBy.to : true) &&
+      (filterBy.isDraft ? email.isDraft : true) &&
+      (filterBy.isTrash ? email.isTrash : true)
     );
   });
 }

@@ -12,36 +12,34 @@ import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
 
 export function EmailIndex() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const params = useParams();
 
   const [emails, setEmails] = useState(null);
-  const [filterBy, setFilterBy] = useState(emailService.getDefaultFilter());
+  const [filterBy, setFilterBy] = useState(
+    emailService.getDefaultFilter(params.folder)
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!params.folder) {
-      navigate("/emails/inbox");
-    }
-    setSearchParams(filterBy);
-    console.log("Params changed to:", params);
-    // modifyFilterByFolder(params.folder);
+    if (params.folder) {
+      setFilterBy(emailService.getDefaultFilter(params.folder));
+    } else navigate("/emails/inbox");
   }, [params.folder]);
 
   useEffect(() => {
     loadEmails();
-    console.log("FilterBy changed to:", filterBy);
-    setSearchParams(filterBy);
   }, [filterBy]);
 
   async function loadEmails() {
     try {
+      console.log("filterBy", filterBy);
       const emails = await emailService.query(filterBy);
       setEmails(emails);
     } catch (err) {
       console.log("Error in loadEmails", err);
     }
   }
+
   function onSetFilter(fieldsToUpdate) {
     setFilterBy((prevFilter) => ({ ...prevFilter, ...fieldsToUpdate }));
   }

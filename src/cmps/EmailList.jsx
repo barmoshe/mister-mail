@@ -18,17 +18,13 @@ export function EmailList({ emails, onRemoveEmail, updateEmail }) {
   function starClassName(isStarred) {
     return isStarred ? "star on" : "star off";
   }
-  return (
+  return emails.length === 0 ? (
+    <div className="empty-emails">No emails to show</div>
+  ) : (
     <div className="email-table-grid">
       {emails.map((email) => (
         <article key={email.id} className={className(email)}>
-          <div className="email-actions">
-            <button
-              className="remove-email"
-              onClick={() => onRemoveEmail(email.id)}
-            >
-              X
-            </button>
+          <div className="email-actions ">
             <input className="select-email" type="checkbox" />
             <button
               className={starClassName(email.isStarred)}
@@ -42,6 +38,12 @@ export function EmailList({ emails, onRemoveEmail, updateEmail }) {
           <Link to={`${location.pathname}/${email.id}`}>
             <EmailPreview email={email} />
           </Link>
+          <button
+            className="remove-email "
+            onClick={() => onRemoveEmail(email.id)}
+          >
+            X
+          </button>
         </article>
       ))}
     </div>

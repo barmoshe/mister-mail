@@ -7,7 +7,13 @@
 
 .email-preview .date {
   justify-self: end; /* Align "date" text to the right */
+  font-size: 1rem; /* Smaller font size */
+  color: #666; /* Light gray color */
 }
+.email-preview:hover .date {
+  display: none;
+}
+
 .email-preview * {
   white-space: nowrap; /* Prevent wrapping of text */
   overflow: hidden; /* Hide overflow text */

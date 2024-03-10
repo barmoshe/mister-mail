@@ -28,13 +28,12 @@
   margin: 0;
 }
 
-.email-actions button {
+.email-preview-container button {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
 }
-.remove-email:hover,
 .select-email:hover {
   color: red; /* Change color on hover */
 }
@@ -51,4 +50,7 @@
 
 .star.off {
   color: #ccc; /* Color of unstarred icon */
+}
+.email-preview-container:not(:hover) .remove-email {
+  display: none;
 }

@@ -45,10 +45,17 @@ export function EmailIndex() {
   }
   async function onRemoveEmail(emailId) {
     try {
-      await emailService.remove(emailId);
-      setEmails((prevEmails) => {
-        return prevEmails.filter((email) => email.id !== emailId);
-      });
+      //if email is in trash, remove it permanently else set isTrash to true
+      let email = emails.find((email) => email.id === emailId);
+      if (email.isTrash) {
+        await emailService.remove(emailId);
+      } else {
+        email.isTrash = true;
+        await emailService.save(email);
+      }
+      setEmails((prevEmails) =>
+        prevEmails.filter((currEmail) => currEmail.id !== emailId)
+      );
     } catch (err) {
       console.log("Error in onRemoveEmail", err);
     }

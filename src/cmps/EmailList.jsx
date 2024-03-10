@@ -6,7 +6,6 @@ import { FaRegStar as Star } from "react-icons/fa6";
 
 export function EmailList({ emails, onRemoveEmail, updateEmail }) {
   const location = useLocation();
-  console.log("location", location);
   function className(email) {
     return email.isRead
       ? "email-preview-container"

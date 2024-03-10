@@ -13,12 +13,13 @@ import { EmailFilter } from "./../cmps/EmailFilter.jsx";
 
 export function EmailIndex() {
   const params = useParams();
+  const navigate = useNavigate();
 
   const [emails, setEmails] = useState(null);
   const [filterBy, setFilterBy] = useState(
     emailService.getDefaultFilter(params.folder)
   );
-  const navigate = useNavigate();
+  const [sortBy, setSortBy] = useState("sentAt");
 
   useEffect(() => {
     if (params.folder) {
@@ -28,12 +29,12 @@ export function EmailIndex() {
 
   useEffect(() => {
     loadEmails();
-  }, [filterBy]);
+  }, [filterBy, sortBy]);
 
   async function loadEmails() {
     try {
       console.log("filterBy", filterBy);
-      const emails = await emailService.query(filterBy);
+      const emails = await emailService.query(filterBy, sortBy);
       setEmails(emails);
     } catch (err) {
       console.log("Error in loadEmails", err);
@@ -42,6 +43,10 @@ export function EmailIndex() {
 
   function onSetFilter(fieldsToUpdate) {
     setFilterBy((prevFilter) => ({ ...prevFilter, ...fieldsToUpdate }));
+  }
+  function onSetSort(sortBy) {
+    console.log("sortBy from ei", sortBy);
+    setSortBy(sortBy);
   }
   async function onRemoveEmail(emailId) {
     try {
@@ -79,7 +84,12 @@ export function EmailIndex() {
   ) : (
     <section className="email-index">
       <div className="email-list-container">
-        <EmailFilter filterBy={filterBy} onSetFilter={onSetFilter} />
+        <EmailFilter
+          filterBy={filterBy}
+          onSetFilter={onSetFilter}
+          sortBy={sortBy}
+          onSetSort={onSetSort}
+        />
         <EmailList
           emails={emails}
           onRemoveEmail={onRemoveEmail}

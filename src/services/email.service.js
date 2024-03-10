@@ -16,10 +16,18 @@ export const emailService = {
 const STORAGE_KEY = "emails_db";
 _createEmails();
 
-async function query(filterBy) {
+async function query(filterBy, sortBy = "sentAt") {
+  console.log("sortBy", sortBy);
   let emails = await storageService.query(STORAGE_KEY);
   if (filterBy) {
     emails = _filter(emails, filterBy);
+  }
+  if (sortBy) {
+    emails.sort((email1, email2) => {
+      if (email1[sortBy] < email2[sortBy]) return 1;
+      if (email1[sortBy] > email2[sortBy]) return -1;
+      return 0;
+    });
   }
   return emails;
 }

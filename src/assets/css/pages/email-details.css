@@ -1,0 +1,41 @@
+.email-details {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 10px; /* Add padding */
+  border-radius: 10px 0 0 10px;
+  background-color: rgba(255, 255, 255);
+  height: 100%; /* Ensure the sidebar takes full height */
+}
+
+.email-details-toolbar {
+  margin-bottom: 20px;
+}
+
+.email-details-content {
+  margin-bottom: 20px;
+}
+
+.email-details-header h2 {
+  margin-bottom: 10px;
+}
+
+.email-details-meta {
+  margin-bottom: 10px;
+}
+
+.email-details-meta p {
+  margin: 5px 0;
+}
+
+.email-details-footer button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.email-details-footer button:hover {
+  background-color: #0056b3;
+}

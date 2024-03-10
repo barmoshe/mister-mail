@@ -19,7 +19,7 @@ export function EmailDetails() {
       const email = await emailService.getById(params.emailId);
       setEmail(email);
     } catch (err) {
-      navigate("/emails");
+      navigate("/emails/inbox");
       console.log("Error in loadEmail", err);
     }
   }
@@ -31,17 +31,21 @@ export function EmailDetails() {
 
   return (
     <section className="email-details">
-      <div className="email-details-toolbar">
-        <h3>Tool bar</h3>
+      <div className="email-details-toolbar"></div>
+      <div className="email-details-content">
+        <div className="email-details-header">
+          <h2>{email.subject}</h2>
+          <div className="email-details-meta">
+            <p>Sent At: {new Date(email.sentAt).toLocaleString()}</p>
+            <p>From: {email.from}</p>
+          </div>
+        </div>
+        <div className="email-details-body">
+          <p>{email.body}</p>
+        </div>
       </div>
-      <div className="email-details-header">
-        <h2>{email.subject}</h2>
-        <h3>{email.sentAt}</h3>
-        <h3>{email.from}</h3>
-      </div>
-      <div className="email-details-body">
-        <h3>{email.body}</h3>
-        <button onClick={() => handleBack()}>Back</button>
+      <div className="email-details-footer">
+        <button onClick={handleBack}>Back</button>
       </div>
     </section>
   );

@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { eventBusService } from "./../services/event-bus.service";
+import {
+  eventBusService,
+  toggleCompose,
+} from "./../services/event-bus.service";
 
 import {
   FaInbox,
@@ -43,7 +46,7 @@ export function SideBar() {
     setOpenedItem(folderName);
   }
   function handleComposeClick() {
-    //openCompose();
+    toggleCompose();
   }
 
   switch (isSideBarOpen) {

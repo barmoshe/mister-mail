@@ -8,7 +8,7 @@ import {
   FaRegFileAlt,
   FaTrash,
 } from "react-icons/fa";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 
 const folders = [
   { name: "Inbox", path: "/emails/inbox", icon: <FaInbox /> },
@@ -23,7 +23,7 @@ export function SideBar() {
   const [openedItem, setOpenedItem] = useState(folders[0].name);
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
-  const navigate = useNavigate();
+  const params = useParams();
   useEffect(() => {
     const unsubscribe = eventBusService.on("toggle-sidebar", () => {
       setIsSideBarOpen(!isSideBarOpen);
@@ -33,8 +33,17 @@ export function SideBar() {
     };
   }, [isSideBarOpen]);
 
+  useEffect(() => {
+    if (!params.folder) {
+      setOpenedItem(folders[0].name);
+    }
+  }, [params.folder]);
+
   function handleFolderClick(folderName) {
     setOpenedItem(folderName);
+  }
+  function handleComposeClick() {
+    //openCompose();
   }
 
   switch (isSideBarOpen) {
@@ -42,7 +51,9 @@ export function SideBar() {
       return (
         <section className="app-sidebar">
           <div className="sidebar-actions">
-            <button className="compose-btn">Compose</button>
+            <button className="compose-btn" onClick={handleComposeClick}>
+              Compose
+            </button>
           </div>
           <div className="sidebar-folders">
             {folders.map((folder, index) => {
@@ -83,7 +94,9 @@ export function SideBar() {
       return (
         <section className="app-sidebar closed">
           <div className="sidebar-actions">
-            <button className="compose-btn">c</button>
+            <button className="compose-btn" onClick={handleComposeClick}>
+              C
+            </button>
           </div>
           <div className="sidebar-folders">
             {folders.map((folder, index) => {

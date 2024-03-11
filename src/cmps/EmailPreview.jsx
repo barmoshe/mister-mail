@@ -5,6 +5,7 @@ export function EmailPreview({ email }) {
       <span className="subject">{email.subject}</span>
       <span className="body-prefix">{email.body.substring(0, 50)}</span>
       <span className="date">
+        <span className="is-trash">{email.isTrash ? "🗑" : ""}</span>
         {new Date(email.sentAt).toLocaleDateString()}
       </span>
     </article>

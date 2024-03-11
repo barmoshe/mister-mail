@@ -8,7 +8,6 @@ function createEventEmitter() {
       listenersMap[evName] = listenersMap[evName]
         ? [...listenersMap[evName], listener]
         : [listener];
-      console.log("listenersMap", listenersMap);
 
       return () => {
         listenersMap[evName] = listenersMap[evName].filter(

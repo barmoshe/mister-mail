@@ -17,7 +17,6 @@ const STORAGE_KEY = "emails_db";
 _createEmails();
 
 async function query(filterBy, sortBy = "sentAt") {
-  console.log("sortBy", sortBy);
   let emails = await storageService.query(STORAGE_KEY);
   if (filterBy) {
     emails = _filter(emails, filterBy);
@@ -75,24 +74,18 @@ function getDefaultFilter(folder = "Inbox") {
   switch (folder) {
     case "inbox":
       return {
-        text: "",
-        isRead: "all",
         isStarred: "all",
         isDraft: false,
         isTrash: false,
       };
     case "starred":
       return {
-        text: "",
-        isRead: "all",
         isStarred: "true",
         isDraft: false,
         isTrash: false,
       };
     case "sent":
       return {
-        text: "",
-        isRead: "all",
         isStarred: "all",
         from: logedInUser.email,
         isDraft: false,
@@ -100,8 +93,6 @@ function getDefaultFilter(folder = "Inbox") {
       };
     case "drafts":
       return {
-        text: "",
-        isRead: "all",
         isStarred: "all",
         from: logedInUser.email,
         isDraft: true,
@@ -109,22 +100,19 @@ function getDefaultFilter(folder = "Inbox") {
       };
     case "trash":
       return {
-        text: "",
-        isRead: "all",
         isStarred: "all",
         isDraft: false,
         isTrash: true,
       };
     default:
       return {
-        text: "",
-        isRead: "all",
         isStarred: "all",
         isDraft: false,
         isTrash: false,
       };
   }
 }
+
 async function markAsRead(emailId) {
   try {
     const email = await getById(emailId);
@@ -147,7 +135,7 @@ function _createEmails() {
     emails = [
       {
         id: "e101",
-        subject: "Reconnect: Let's Catch Up Over Coffee",
+        subject: "666: Let's Catch Up Over Coffee",
         body: "Hey there! It's been a while since we last spoke. I'd love to hear how you've been. How about we grab a coffee sometime soon and catch up?",
         isRead: false,
         isStarred: true,
@@ -155,7 +143,7 @@ function _createEmails() {
         from: "barr@appsus.com",
         to: "autoMail2@gmail.com",
         isDraft: false,
-        isTrash: false,
+        isTrash: true,
       },
       {
         id: "e102",
@@ -259,9 +247,8 @@ function _filter(emails, filterBy) {
       (isStarred === "all" || email.isStarred.toString() === isStarred) &&
       (filterBy.from ? email.from === filterBy.from : true) &&
       (filterBy.to ? email.to === filterBy.to : true) &&
-      (filterBy.isDraft ? email.isDraft : true) &&
-      (filterBy.isTrash ? email.isTrash : true)
+      (filterBy.isDraft ? email.isDraft : !email.isDraft) &&
+      (filterBy.isTrash ? email.isTrash : !email.isTrash)
     );
   });
 }
-// Check if the email matches the filter criteria

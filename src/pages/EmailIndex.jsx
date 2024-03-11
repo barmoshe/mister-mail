@@ -10,14 +10,7 @@ import { emailService } from "./../services/email.service.js";
 
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
-import { ProgressBar } from "./../cmps/ProgressBar.jsx";
 import { Compose } from "./../cmps/Compose.jsx";
-
-function calcUnreadEmails({ emails }) {
-  return emails.reduce((acc, email) => {
-    return email.isRead ? acc : acc + 1;
-  }, 0);
-}
 
 export function EmailIndex() {
   const params = useParams();
@@ -25,42 +18,47 @@ export function EmailIndex() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [emails, setEmails] = useState(null);
-  const [filterBy, setFilterBy] = useState(
-    emailService.getDefaultFilter(params.folder)
-  );
-  const [sortBy, setSortBy] = useState("sentAt");
-
-  const [unreadEmails, setUnreadEmails] = useState(0);
+  const [filterBy, setFilterBy] = useState({
+    ...emailService.getDefaultFilter(params.folder),
+    isRead: searchParams.get("isRead") ? searchParams.get("isRead") : "all",
+    text: searchParams.get("text") ? searchParams.get("text") : "",
+  });
+  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "sentAt");
 
   useEffect(() => {
-    if (params.folder) {
-      setFilterBy(emailService.getDefaultFilter(params.folder));
-    } else navigate("/emails/inbox");
-    console.log("searchParams", searchParams.toString());
-  }, [params.folder, searchParams]);
+    if (!params.folder) {
+      navigate("/emails/inbox");
+    }
+    setFilterBy({
+      ...emailService.getDefaultFilter(params.folder),
+      isRead: filterBy.isRead ? filterBy.isRead : "all",
+      text: filterBy.text ? filterBy.text : "",
+    });
+  }, [params.folder, searchParams.get("isRead"), searchParams.get("text")]);
+
+  useEffect(() => {
+    const sortBy = searchParams.get("sortBy") || "sentAt";
+    onSetSort(sortBy);
+  }, [searchParams.get("sortBy")]);
+
+  useEffect(() => {
+    setSearchParams({ ...searchParams, sortBy });
+  }, [sortBy]);
 
   useEffect(() => {
     loadEmails();
-    if (emails) setUnreadEmails(calcUnreadEmails({ emails }));
-    const filterByChanges = getfilterByChangesFromDefault();
-    setSearchParams({ ...filterByChanges, sortBy });
-  }, [filterBy, sortBy]);
-
-  function getfilterByChangesFromDefault() {
-    const defaultFilter = emailService.getDefaultFilter();
-    const filterByChanges = {};
-    for (const key in filterBy) {
-      if (filterBy[key] !== defaultFilter[key]) {
-        filterByChanges[key] = filterBy[key];
-      }
-    }
-    return filterByChanges;
-  }
+    setSearchParams({
+      ...searchParams,
+      isRead: filterBy.isRead ? filterBy.isRead : "all",
+      text: filterBy.text ? filterBy.text : "",
+    });
+  }, [filterBy]);
 
   async function loadEmails() {
     try {
-      console.log("filterBy", filterBy);
       const emails = await emailService.query(filterBy, sortBy);
+      console.log("filterBy", filterBy);
+      console.log("emails", emails);
       setEmails(emails);
     } catch (err) {
       console.log("Error in loadEmails", err);
@@ -71,7 +69,6 @@ export function EmailIndex() {
     setFilterBy((prevFilter) => ({ ...prevFilter, ...fieldsToUpdate }));
   }
   function onSetSort(sortBy) {
-    console.log("sortBy from ei", sortBy);
     setSortBy(sortBy);
   }
   async function onRemoveEmail(emailId) {
@@ -122,8 +119,7 @@ export function EmailIndex() {
           updateEmail={onUpdateEmail}
         />
       </div>
-      <ProgressBar value={unreadEmails} max={emails.length} />
-      {searchParams.Compose ? <Compose /> : ""}
+      {searchParams.get("compose") && <Compose />}
     </section>
   );
 }

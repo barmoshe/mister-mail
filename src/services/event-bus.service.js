@@ -79,6 +79,3 @@ export function toggleSidebar() {
 export function filterByText(text) {
   eventBusService.emit("filter-by-text", text);
 }
-export function toggleCompose() {
-  eventBusService.emit("compose");
-}

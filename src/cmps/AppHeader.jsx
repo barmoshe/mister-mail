@@ -33,7 +33,7 @@ export function AppHeader() {
           className="header-icon"
           onClick={() => handleMenuClick()}
         />
-        <NavLink to="/emails">
+        <NavLink to="/emails/inbox">
           <img src={logo} alt="logo" className="header-logo" />
         </NavLink>
       </div>

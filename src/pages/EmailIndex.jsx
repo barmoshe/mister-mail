@@ -11,6 +11,7 @@ import { emailService } from "./../services/email.service.js";
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
 import { ProgressBar } from "./../cmps/ProgressBar.jsx";
+import { Compose } from "./../cmps/Compose.jsx";
 
 function calcUnreadEmails({ emails }) {
   return emails.reduce((acc, email) => {
@@ -21,25 +22,40 @@ function calcUnreadEmails({ emails }) {
 export function EmailIndex() {
   const params = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [emails, setEmails] = useState(null);
   const [filterBy, setFilterBy] = useState(
     emailService.getDefaultFilter(params.folder)
   );
   const [sortBy, setSortBy] = useState("sentAt");
-  console.log(emails);
+
   const [unreadEmails, setUnreadEmails] = useState(0);
 
   useEffect(() => {
     if (params.folder) {
       setFilterBy(emailService.getDefaultFilter(params.folder));
     } else navigate("/emails/inbox");
-  }, [params.folder]);
+    console.log("searchParams", searchParams.toString());
+  }, [params.folder, searchParams]);
 
   useEffect(() => {
     loadEmails();
-    setUnreadEmails(calcUnreadEmails({ emails }));
+    if (emails) setUnreadEmails(calcUnreadEmails({ emails }));
+    const filterByChanges = getfilterByChangesFromDefault();
+    setSearchParams({ ...filterByChanges, sortBy });
   }, [filterBy, sortBy]);
+
+  function getfilterByChangesFromDefault() {
+    const defaultFilter = emailService.getDefaultFilter();
+    const filterByChanges = {};
+    for (const key in filterBy) {
+      if (filterBy[key] !== defaultFilter[key]) {
+        filterByChanges[key] = filterBy[key];
+      }
+    }
+    return filterByChanges;
+  }
 
   async function loadEmails() {
     try {
@@ -107,6 +123,7 @@ export function EmailIndex() {
         />
       </div>
       <ProgressBar value={unreadEmails} max={emails.length} />
+      {searchParams.Compose ? <Compose /> : ""}
     </section>
   );
 }

@@ -116,8 +116,13 @@ function getDefaultFilter(folder = "Inbox") {
         isTrash: true,
       };
     default:
-      console.log("Invalid folder name");
-      return {};
+      return {
+        text: "",
+        isRead: "all",
+        isStarred: "all",
+        isDraft: false,
+        isTrash: false,
+      };
   }
 }
 async function markAsRead(emailId) {

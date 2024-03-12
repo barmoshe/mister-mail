@@ -8,7 +8,7 @@ export function SignIn() {
       <img className="google-logo" src={logoSrc} alt="google-logo" />
       <h1> welcome</h1>
       <nav>
-        <NavLink to="/EmailIndex">Sign in </NavLink>
+        <NavLink to="/emails/inbox">Sign in with Google</NavLink>
       </nav>
     </section>
   );

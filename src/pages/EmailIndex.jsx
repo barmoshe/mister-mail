@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import { emailService } from "./../services/email.service.js";
+import { eventBusService } from "./../services/event-bus.service.js";
 
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailFilter } from "./../cmps/EmailFilter.jsx";
@@ -24,6 +25,8 @@ export function EmailIndex() {
     text: searchParams.get("text") ? searchParams.get("text") : "",
   });
   const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "sentAt");
+  console;
+  const [isCompose, setIsCompose] = useState(searchParams.get("compose") || "");
 
   useEffect(() => {
     if (!params.folder) {
@@ -44,13 +47,32 @@ export function EmailIndex() {
   useEffect(() => {
     setSearchParams({ ...searchParams, sortBy });
   }, [sortBy]);
+  useEffect(() => {
+    console.log("isCompose", isCompose);
+    console.log("searchParams", searchParams.toString());
+
+    const unsubscribe = eventBusService.on("open-compose", () => {
+      setIsCompose("new");
+      setSearchParams({
+        ...searchParams,
+        isRead: filterBy.isRead ? filterBy.isRead : "all",
+        text: filterBy.text ? filterBy.text : "",
+        compose: isCompose,
+      });
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [isCompose]);
 
   useEffect(() => {
     loadEmails();
+    console.log("1212searchParams", searchParams.toString());
     setSearchParams({
       ...searchParams,
       isRead: filterBy.isRead ? filterBy.isRead : "all",
       text: filterBy.text ? filterBy.text : "",
+      compose: isCompose,
     });
   }, [filterBy]);
 

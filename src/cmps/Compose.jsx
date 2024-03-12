@@ -2,46 +2,63 @@
 import React, { useState } from "react";
 import { emailService } from "./../services/email.service.js";
 
-export function Compose({ onSendEmail }) {
-  const [email, setEmail] = useState(emailService.createEmail());
-  const [to, setTo] = useState("");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
+export function Compose({ onClose }) {
+  const [newEmail, setNewEmail] = useState({
+    to: "",
+    subject: "",
+    body: "",
+  });
 
-  function handleChange(ev) {
-    let { value, name: field } = ev.target;
-    setEmail((prev) => ({ ...prev, [field]: value }));
-  }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewEmail((prevEmail) => ({ ...prevEmail, [name]: value }));
+  };
 
-  async function sendEmail(ev) {
-    ev.preventDefault();
-    await onSendEmail(email);
-  }
+  const handleSend = async () => {
+    try {
+      // Add any additional logic or validation here
+      await emailService.send(newEmail);
+      onClose(); // Close the compose window after sending the email
+    } catch (err) {
+      console.log("Error sending email:", err);
+    }
+  };
+
   return (
-    <section className="compose">
-      <form className="compose-form" onSubmit={sendEmail}>
-        <input
-          type="text"
-          name="to"
-          value={email.to}
-          placeholder="To"
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="subject"
-          value={email.subject}
-          placeholder="Subject"
-          onChange={handleChange}
-        />
-        <textarea
-          name="body"
-          value={email.body}
-          placeholder="Compose your email"
-          onChange={handleChange}
-        ></textarea>
-        <button>Send</button>
-      </form>
-    </section>
+    <div className="compose-overlay">
+      <div className="compose-modal">
+        <h2>Compose New Email</h2>
+        <label>
+          To:
+          <input
+            type="text"
+            name="to"
+            value={newEmail.to}
+            onChange={handleInputChange}
+          />
+        </label>
+        <label>
+          Subject:
+          <input
+            type="text"
+            name="subject"
+            value={newEmail.subject}
+            onChange={handleInputChange}
+          />
+        </label>
+        <label>
+          Body:
+          <textarea
+            name="body"
+            value={newEmail.body}
+            onChange={handleInputChange}
+          />
+        </label>
+        <button onClick={handleSend}>Send</button>
+        <button className="cancel" onClick={onClose}>
+          Cancel
+        </button>
+      </div>
+    </div>
   );
 }

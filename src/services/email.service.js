@@ -146,6 +146,12 @@ function filterByText(emails, txt) {
   }
   return emails;
 }
+function isMatchToTxt(email, txt) {
+  return (
+    email.subject.toLowerCase().includes(txt.toLowerCase()) ||
+    email.body.toLowerCase().includes(txt.toLowerCase())
+  );
+}
 
 function filterByReadStatus(emails, isRead) {
   switch (isRead) {

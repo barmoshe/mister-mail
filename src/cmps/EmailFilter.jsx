@@ -6,7 +6,7 @@ export function EmailFilter({ filterBy, onSetFilter }) {
 
   useEffect(() => {
     const unsubscribe = eventBusService.on("filter-by-text", (text) => {
-      setFilterByToEdit((prevFilterBy) => ({ ...prevFilterBy, text }));
+      setFilterByToEdit((prevFilterBy) => ({ ...prevFilterBy, txt: text }));
     });
     return () => {
       unsubscribe();

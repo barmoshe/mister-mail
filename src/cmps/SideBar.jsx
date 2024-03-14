@@ -8,7 +8,7 @@ import {
   FaRegFileAlt,
   FaTrash,
 } from "react-icons/fa";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const folders = [
   { name: "Inbox", path: "/emails/inbox", icon: <FaInbox /> },
@@ -17,12 +17,13 @@ const folders = [
   { name: "Drafts", path: "/emails/drafts", icon: <FaRegFileAlt /> },
   { name: "Trash", path: "/emails/trash", icon: <FaTrash /> },
 ];
-const labels = [{ name: "Label1" }, { name: "Label2" }, { name: "Label3" }];
 
 export function SideBar() {
-  const params = useParams();
-  const [openedItem, setOpenedItem] = useState(params.folder);
+  const [openedItem, setOpenedItem] = useState(null);
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
+  const location = useLocation();
+
+  const currentPath = location.pathname; // Get current path
 
   useEffect(() => {
     const unsubscribe = eventBusService.on("toggle-sidebar", () => {
@@ -34,14 +35,19 @@ export function SideBar() {
   }, [isSideBarOpen]);
 
   useEffect(() => {
-    if (!params.folder) {
-      setOpenedItem(folders[0].name);
+    // Find the matching folder based on path
+    const matchingFolder = folders.find((folder) =>
+      currentPath.startsWith(folder.path)
+    );
+    if (matchingFolder) {
+      setOpenedItem(matchingFolder.name);
     }
-  }, [params.folder]);
+  }, [currentPath]);
 
   function handleFolderClick(folderName) {
     setOpenedItem(folderName);
   }
+
   function handleComposeClick() {
     openCompose();
   }
@@ -77,17 +83,17 @@ export function SideBar() {
           </div>
 
           {/* <div className="sidebar-labels">
-        {labels.map((label, index) => {
-          return (
-            <div
-              key={index}
-              className={`label ${openedItem === label.name ? "open" : ""}`}
-            >
-              <h3>{label.name}</h3>
-            </div>
-          );
-        })}
-      </div> */}
+            {labels.map((label, index) => {
+              return (
+                <div
+                  key={index}
+                  className={`label ${openedItem === label.name ? "open" : ""}`}
+                >
+                  <h3>{label.name}</h3>
+                </div>
+              );
+            })}
+          </div> */}
         </section>
       );
     case false:

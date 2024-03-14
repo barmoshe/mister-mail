@@ -11,15 +11,16 @@ export function EmailDetails() {
 
   useEffect(() => {
     loadEmail();
-    emailService.markAsRead(params.emailId);
   }, [params.emailId]);
 
   async function loadEmail() {
     try {
       const email = await emailService.getById(params.emailId);
       setEmail(email);
+      email.isRead = true;
+      await emailService.save(email);
     } catch (err) {
-      navigate("/emails/inbox");
+      navigate(-1);
       console.log("Error in loadEmail", err);
     }
   }

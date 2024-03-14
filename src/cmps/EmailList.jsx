@@ -19,6 +19,10 @@ export function EmailList({ emails, onRemoveEmail, onUpdateEmail }) {
   function starClassName(isStarred) {
     return isStarred ? "star on" : "star off";
   }
+  function changeReadStatus(email) {
+    email.isRead = !email.isRead;
+    onUpdateEmail(email);
+  }
 
   return emails.length === 0 ? (
     <div className="empty-emails">No emails to show</div>
@@ -35,6 +39,12 @@ export function EmailList({ emails, onRemoveEmail, onUpdateEmail }) {
               }}
             >
               <Star />
+            </button>
+            <button
+              className="change-read-status"
+              onClick={() => changeReadStatus(email)}
+            >
+              {email.isRead ? "v" : "u"}
             </button>
           </div>
           <Link to={`${location.pathname}/${email.id}`}>

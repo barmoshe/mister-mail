@@ -10,20 +10,51 @@ import {
 } from "react-icons/fa";
 import { NavLink, useLocation } from "react-router-dom";
 
-const folders = [
-  { name: "Inbox", path: "/emails/inbox", icon: <FaInbox /> },
-  { name: "Starred", path: "/emails/starred", icon: <FaStar /> },
-  { name: "Sent", path: "/emails/sent", icon: <FaRegPaperPlane /> },
-  { name: "Drafts", path: "/emails/drafts", icon: <FaRegFileAlt /> },
-  { name: "Trash", path: "/emails/trash", icon: <FaTrash /> },
-];
-
 export function SideBar() {
   const [openedItem, setOpenedItem] = useState(null);
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
   const location = useLocation();
-
+  let searchParams;
   const currentPath = location.pathname; // Get current path
+  const [folders, setFolders] = useState([
+    { name: "Inbox", path: "/emails/inbox", icon: <FaInbox /> },
+    { name: "Starred", path: "/emails/starred", icon: <FaStar /> },
+    { name: "Sent", path: "/emails/sent", icon: <FaRegPaperPlane /> },
+    { name: "Drafts", path: "/emails/drafts", icon: <FaRegFileAlt /> },
+    { name: "Trash", path: "/emails/trash", icon: <FaTrash /> },
+  ]);
+
+  useEffect(() => {
+    searchParams = new URLSearchParams(location.search);
+    setFolders([
+      {
+        name: "Inbox",
+        path: `/emails/inbox?${searchParams.toString()}`,
+        icon: <FaInbox />,
+      },
+      {
+        name: "Starred",
+        path: `/emails/starred?${searchParams.toString()}`,
+        icon: <FaStar />,
+      },
+      {
+        name: "Sent",
+        path: `/emails/sent?${searchParams.toString()}`,
+        icon: <FaRegPaperPlane />,
+      },
+      {
+        name: "Drafts",
+        path: `/emails/drafts?${searchParams.toString()}`,
+        icon: <FaRegFileAlt />,
+      },
+      {
+        name: "Trash",
+        path: `/emails/trash?${searchParams.toString()}`,
+        icon: <FaTrash />,
+      },
+    ]);
+    console.table(folders);
+  }, [location]);
 
   useEffect(() => {
     const unsubscribe = eventBusService.on("toggle-sidebar", () => {

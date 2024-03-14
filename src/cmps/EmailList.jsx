@@ -4,7 +4,7 @@ import { EmailPreview } from "./EmailPreview.jsx";
 
 import { FaRegStar as Star } from "react-icons/fa6";
 
-export function EmailList({ emails, onRemoveEmail, updateEmail }) {
+export function EmailList({ emails, onRemoveEmail, onUpdateEmail }) {
   const location = useLocation();
   function className(email) {
     return email.isRead
@@ -13,11 +13,13 @@ export function EmailList({ emails, onRemoveEmail, updateEmail }) {
   }
   function onStarClick(email) {
     email.isStarred = !email.isStarred;
-    updateEmail(email);
+    onUpdateEmail(email);
+    console.log("starred email", email);
   }
   function starClassName(isStarred) {
     return isStarred ? "star on" : "star off";
   }
+
   return emails.length === 0 ? (
     <div className="empty-emails">No emails to show</div>
   ) : (
@@ -40,7 +42,9 @@ export function EmailList({ emails, onRemoveEmail, updateEmail }) {
           </Link>
           <button
             className="remove-email "
-            onClick={() => onRemoveEmail(email.id)}
+            onClick={() => {
+              onRemoveEmail(email.id);
+            }}
           >
             X
           </button>

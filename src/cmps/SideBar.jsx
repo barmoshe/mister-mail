@@ -20,10 +20,10 @@ const folders = [
 const labels = [{ name: "Label1" }, { name: "Label2" }, { name: "Label3" }];
 
 export function SideBar() {
-  const [openedItem, setOpenedItem] = useState(folders[0].name);
+  const params = useParams();
+  const [openedItem, setOpenedItem] = useState(params.folder);
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
-  const params = useParams();
   useEffect(() => {
     const unsubscribe = eventBusService.on("toggle-sidebar", () => {
       setIsSideBarOpen(!isSideBarOpen);

@@ -1,6 +1,6 @@
 import { storageService } from "./async-storage.service.js";
 import { utilService } from "./util.service.js";
-const logedInUser = {
+const loggedInUser = {
   email: "barr@appsus.com",
   fullName: "Bar Moshe",
 };
@@ -9,246 +9,162 @@ export const emailService = {
   getById,
   remove,
   save,
-  createEmail,
-  markAsRead,
   getDefaultFilter,
 };
 const STORAGE_KEY = "emails_db";
 _createEmails();
 
-async function query(filterBy, sortBy = "sentAt") {
+async function query(filterBy = getDefaultFilter(), sortBy = "sentAt") {
   let emails = await storageService.query(STORAGE_KEY);
-  if (filterBy) {
-    emails = _filter(emails, filterBy);
-  }
-  if (sortBy) {
-    emails.sort((email1, email2) => {
-      if (email1[sortBy] < email2[sortBy]) return 1;
-      if (email1[sortBy] > email2[sortBy]) return -1;
-      return 0;
-    });
-  }
+  emails = _filter(emails, filterBy);
+  emails.sort((a, b) => {
+    if (a[sortBy] > b[sortBy]) return 1;
+    if (a[sortBy] < b[sortBy]) return -1;
+    return 0;
+  });
   return emails;
 }
-
-function getById(id) {
-  return storageService.get(STORAGE_KEY, id);
+async function getById(emailId) {
+  const email = await storageService.get(STORAGE_KEY, emailId);
+  return email;
 }
-
-function remove(id) {
-  return storageService.remove(STORAGE_KEY, id);
+async function remove(emailId) {
+  return storageService.remove(STORAGE_KEY, emailId);
 }
-
-function save(emailToSave) {
-  if (emailToSave.id) {
-    return storageService.put(STORAGE_KEY, emailToSave);
+async function save(email) {
+  if (email.id) {
+    return await storageService.put(STORAGE_KEY, email);
   } else {
-    emailToSave.isRead = false;
-    emailToSave.isStarred = false;
-    emailToSave.sentAt = Date.now();
-    return storageService.post(STORAGE_KEY, emailToSave);
+    return await storageService.post(STORAGE_KEY, email);
   }
 }
 
-function createEmail(subject = "", body = "", from = "", to = "") {
+function getDefaultFilter(folder = "inbox") {
   return {
-    subject,
-    body,
-    from,
-    to,
+    folder: folder,
+    txt: "",
+    isRead: null,
   };
-}
-
-// function getEmptyEmail() {
-//   return {
-//     subject: "",
-//     body: "",
-//     from: "",
-//     to: "",
-//     isRead: false,
-//     isStarred: false,
-//     sentAt: 0,
-//   };
-// }
-function getDefaultFilter(folder = "Inbox") {
-  switch (folder) {
-    case "inbox":
-      return {
-        isStarred: "all",
-        isDraft: false,
-        isTrash: false,
-      };
-    case "starred":
-      return {
-        isStarred: "true",
-        isDraft: false,
-        isTrash: false,
-      };
-    case "sent":
-      return {
-        isStarred: "all",
-        from: logedInUser.email,
-        isDraft: false,
-        isTrash: false,
-      };
-    case "drafts":
-      return {
-        isStarred: "all",
-        from: logedInUser.email,
-        isDraft: true,
-        isTrash: false,
-      };
-    case "trash":
-      return {
-        isStarred: "all",
-        isDraft: false,
-        isTrash: true,
-      };
-    default:
-      return {
-        isStarred: "all",
-        isDraft: false,
-        isTrash: false,
-      };
-  }
-}
-
-async function markAsRead(emailId) {
-  try {
-    const email = await getById(emailId);
-    if (email) {
-      email.isRead = true;
-      await save(email);
-      return email;
-    } else {
-      throw new Error("Email not found");
-    }
-  } catch (error) {
-    console.error("Error marking email as read:", error);
-    throw error;
-  }
 }
 
 function _createEmails() {
   let emails = utilService.loadFromStorage(STORAGE_KEY);
   if (!emails || !emails.length) {
-    emails = [
-      {
-        id: "e101",
-        subject: "666: Let's Catch Up Over Coffee",
-        body: "Hey there! It's been a while since we last spoke. I'd love to hear how you've been. How about we grab a coffee sometime soon and catch up?",
-        isRead: false,
-        isStarred: true,
-        sentAt: 1646361600000, // March 3, 2022
-        from: "barr@appsus.com",
-        to: "autoMail2@gmail.com",
-        isDraft: false,
-        isTrash: true,
-      },
-      {
-        id: "e102",
-        subject: "Just a Quick Check-In",
-        body: "Hi there, I hope this email finds you well. I wanted to touch base and see how things are going on your end. Let me know if there's anything I can assist you with!",
-        isRead: true,
-        isStarred: false,
-        sentAt: 1646179200000, // March 1, 2022
-        from: "autoMail3@gmail.com",
-        to: "barr@appsus.com",
-        isDraft: false,
-        isTrash: false,
-      },
-      {
-        id: "e103",
-        subject: "Saying Hi!",
-        body: "Hello! I hope you're having a fantastic day. Just wanted to drop a quick message to say hi and see how you're doing. Let's catch up soon!",
-        isRead: false,
-        isStarred: false,
-        sentAt: 1646256000000, // March 2, 2022
-        from: "barr@appsus.com",
-        to: "autoMail3@gmail.com",
-        isDraft: false,
-        isTrash: false,
-      },
-      {
-        id: "e104",
-        subject: "Breaking News: Your Weekly Digest",
-        body: "Dear Subscriber, Stay updated with our weekly digest featuring the latest news, trends, and insights from around the world. Click to read more!",
-        isRead: true,
-        isStarred: true,
-        sentAt: 1646030400000, // February 28, 2022
-        from: "news@weeklydigest.com",
-        to: "barr@appsus.com",
-        isDraft: false,
-        isTrash: false,
-      },
-      {
-        id: "e105",
-        subject: "Invitation: Exclusive Event Invitation",
-        body: "You're invited to an exclusive event happening next week! Join us for an evening filled with networking opportunities, insightful discussions, and much more.",
-        isRead: false,
-        isStarred: true,
-        sentAt: 1646448000000, // March 4, 2022
-        from: "events@exclusiveinvite.com",
-        to: "barr@appsus.com",
-        isDraft: false,
-        isTrash: false,
-      },
-      {
-        id: "e106",
-        subject: "Request for Feedback: Your Opinion Matters!",
-        body: "Dear valued customer, We're continuously striving to improve our services, and your feedback is invaluable to us. Please take a moment to share your thoughts and suggestions.",
-        isRead: true,
-        isStarred: false,
-        sentAt: 1646102400000, // February 28, 2022
-        from: "feedback@yourcompany.com",
-        to: "barr@appsus.com",
-        isDraft: false,
-        isTrash: false,
-      },
-      {
-        id: "e107",
-        subject: "Reminder: Upcoming Webinar",
-        body: "Don't forget to mark your calendars for our upcoming webinar on [Topic]. Gain insights from industry experts and enhance your knowledge. Register now!",
-        isRead: false,
-        isStarred: false,
-        sentAt: 1646350800000, // March 3, 2022
-        from: "barr@appsus.com",
-        to: "user@appsus.com",
-      },
-      {
-        id: "e108",
-        subject: "Discover Something New!",
-        body: "Hello! Explore our latest collection of products/services designed to enhance your lifestyle. Discover something new today!",
-        isRead: true,
-        isStarred: true,
-        sentAt: 1646091600000, // February 28, 2022
-        from: "discover@newcollection.com",
-        to: "barr@appsus.com",
-      },
-    ];
+    emails = _generateDemoEmails(10);
 
     utilService.saveToStorage(STORAGE_KEY, emails);
   }
 }
 
-function _filter(emails, filterBy) {
-  const text = filterBy.text.toLowerCase();
+function _getRandomElementFromArray(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
 
+function _generateDemoEmails(numEmails) {
+  const emails = [];
+  const subjects = [
+    "Greetings from Company X",
+    "Important Announcement",
+    "Your Weekly Update",
+    "Invitation to Event",
+    "Feedback Request",
+    "Breaking News",
+    "Check out our New Products",
+    "Webinar Reminder",
+    "Just Saying Hi",
+    "Coffee Date?",
+    "Exclusive Offer Inside",
+  ];
+  const bodies = [
+    "Hi there, this is a short demo email.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "This is just a brief message for testing purposes.",
+    "Hello! Here's a quick update for you.",
+    "Dear customer, we value your feedback.",
+    "Stay tuned for exciting news!",
+    "Explore our latest collection now!",
+    "Don't miss our upcoming webinar.",
+    "Just wanted to drop a line.",
+    "Let's catch up soon!",
+    "Check out our exclusive offer.",
+  ];
+
+  for (let i = 0; i < numEmails; i++) {
+    const randomSubject = _getRandomElementFromArray(subjects);
+    const randomBody = _getRandomElementFromArray(bodies);
+    const from =
+      Math.random() < 0.5 ? loggedInUser.email : "sender@example.com";
+    const to =
+      from === loggedInUser.email
+        ? "recipient@example.com"
+        : loggedInUser.email;
+
+    const email = {
+      id: "e" + (i + 1),
+      subject: randomSubject,
+      body: randomBody,
+      isRead: Math.random() < 0.5, // Randomly assign read status
+      isStarred: Math.random() < 0.45, // Randomly assign starred status
+      sentAt: Date.now() - Math.floor(Math.random() * 86400000 * 30), // Random timestamp within the last 30 days
+      from: from,
+      to: to,
+      isDraft: false,
+      removedAt: false,
+    };
+
+    emails.push(email);
+  }
+
+  return emails;
+}
+
+function _filter(emails, filterBy) {
+  const { folder, txt, isRead } = filterBy;
+
+  let filteredEmails = filterByText(emails, txt);
+  filteredEmails = filterByReadStatus(filteredEmails, isRead);
+
+  switch (folder) {
+    case "inbox":
+      return filterByFolder(filteredEmails, loggedInUser.email, false, false);
+    case "sent":
+      return filterByFolder(filteredEmails, loggedInUser.email, true, false);
+    case "starred":
+      return filterByFolder(filteredEmails, null, false, true);
+    case "drafts":
+      return filterByFolder(filteredEmails, null, false, false);
+    case "trash":
+      return filterByFolder(filteredEmails, null, false, false, true);
+    default:
+      return filteredEmails;
+  }
+}
+
+function filterByText(emails, txt) {
+  if (txt !== "") {
+    return emails.filter((email) => isMatchToTxt(email, txt));
+  }
+  return emails;
+}
+
+function filterByReadStatus(emails, isRead) {
+  switch (isRead) {
+    case "true":
+      return emails.filter((email) => email.isRead);
+    case "false":
+      return emails.filter((email) => !email.isRead);
+    default:
+      return emails;
+  }
+}
+
+function filterByFolder(emails, userEmail, isSent, isStarred, isTrash) {
   return emails.filter((email) => {
-    const subject = email.subject.toLowerCase();
-    const from = email.from.toLowerCase();
-    const to = email.to.toLowerCase();
-    const body = email.body.toLowerCase();
-    const isRead = filterBy.isRead;
-    const isStarred = filterBy.isStarred;
-    return (
-      (subject.includes(text) || body.includes(text)) &&
-      (isRead === "all" || email.isRead.toString() === isRead) &&
-      (isStarred === "all" || email.isStarred.toString() === isStarred) &&
-      (filterBy.from ? email.from === filterBy.from : true) &&
-      (filterBy.to ? email.to === filterBy.to : true) &&
-      (filterBy.isDraft ? email.isDraft : !email.isDraft) &&
-      (filterBy.isTrash ? email.isTrash : !email.isTrash)
-    );
+    if (isTrash && email.removedAt) return true;
+    if (!isTrash && email.removedAt) return false;
+    if (isSent && email.from === userEmail) return true;
+    if (!isSent && email.to === userEmail) return true;
+    if (isStarred && email.isStarred) return true;
+    return false;
   });
 }

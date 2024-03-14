@@ -18,20 +18,16 @@ export function EmailIndex() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [emails, setEmails] = useState(null);
+  const [emails, setEmails] = useState([]);
   const [filterBy, setFilterBy] = useState({
     ...emailService.getDefaultFilter(params.folder),
     isRead: searchParams.get("isRead") ? searchParams.get("isRead") : "all",
     text: searchParams.get("text") ? searchParams.get("text") : "",
   });
   const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "sentAt");
-  console;
   const [isCompose, setIsCompose] = useState(searchParams.get("compose") || "");
 
   useEffect(() => {
-    if (!params.folder) {
-      navigate("/emails/inbox");
-    }
     setFilterBy({
       ...emailService.getDefaultFilter(params.folder),
       isRead: filterBy.isRead ? filterBy.isRead : "all",
@@ -45,12 +41,6 @@ export function EmailIndex() {
   }, [searchParams.get("sortBy")]);
 
   useEffect(() => {
-    setSearchParams({ ...searchParams, sortBy });
-  }, [sortBy]);
-  useEffect(() => {
-    console.log("isCompose", isCompose);
-    console.log("searchParams", searchParams.toString());
-
     const unsubscribe = eventBusService.on("open-compose", () => {
       setIsCompose("new");
       setSearchParams({
@@ -66,24 +56,42 @@ export function EmailIndex() {
   }, [isCompose]);
 
   useEffect(() => {
-    loadEmails();
-    console.log("1212searchParams", searchParams.toString());
+    console.log("search params is compose : ", searchParams.getAll("compose"));
+    console.log("isCompose : ", isCompose);
+    if (isCompose === "") {
+      console.log("isCompose is empty");
+      removeQueryParams("compose");
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     setSearchParams({
       ...searchParams,
       isRead: filterBy.isRead ? filterBy.isRead : "all",
       text: filterBy.text ? filterBy.text : "",
+      sortBy: sortBy,
       compose: isCompose,
     });
-  }, [filterBy]);
+    removeQueryParams("compose");
+    setIsCompose("");
+    loadEmails();
+  }, [filterBy, sortBy]);
 
   async function loadEmails() {
     try {
       const emails = await emailService.query(filterBy, sortBy);
-      console.log("filterBy", filterBy);
-      console.log("emails", emails);
       setEmails(emails);
     } catch (err) {
       console.log("Error in loadEmails", err);
+    }
+  }
+  function removeQueryParams(param) {
+    const currParam = searchParams.get(param);
+
+    if (currParam || currParam === "") {
+      searchParams.delete(param);
+
+      setSearchParams(searchParams);
     }
   }
 
@@ -124,9 +132,9 @@ export function EmailIndex() {
   }
 
   if (!emails) return <div>Loading..</div>; //todo: add loader
-  return params.emailId ? (
-    <Outlet />
-  ) : (
+
+  if (params.emailId) return <Outlet />;
+  return (
     <section className="email-index">
       <div className="email-list-container">
         <EmailFilter

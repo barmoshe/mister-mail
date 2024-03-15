@@ -1,47 +1,71 @@
-/* Add this styling to your existing styles or create a new CSS file */
-
-.compose-modal {
+.compose {
   position: fixed;
-  top: 100%;
-  left: 100%;
-  transform: translate(-100%, -100%);
-  width: 45svw;
-  height: 55svh;
-  background-color: rgb(52, 178, 119);
-  padding: 20px;
-  border-radius: 3px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  transition: top 0.3s, left 0.3s;
+  bottom: 0;
+  right: 0;
+  width: 400px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.compose-modal h2 {
-  margin-top: 0;
+.compose.minimized {
+  width: 200px;
+  height: 40px;
+  overflow: hidden;
 }
 
-.compose-modal label {
-  display: block;
-  margin-bottom: 10px;
+.minimized-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
 }
 
-.compose-modal input,
-.compose-modal textarea {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  box-sizing: border-box;
+.minimized-header button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
-.compose-modal button {
+.compose-header {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.compose-header-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.compose-header-actions button {
+  border: none;
   background-color: #007bff;
   color: white;
-  padding: 10px 20px;
-  border: none;
+  padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.compose-modal button.cancel {
-  background-color: #ccc;
-  margin-right: 10px;
+.compose-header-actions button:hover {
+  background-color: #0056b3;
+}
+
+textarea {
+  width: calc(100% - 20px);
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+}
+
+.fullscreen {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  bottom: 0;
 }

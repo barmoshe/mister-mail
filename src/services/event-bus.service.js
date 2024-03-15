@@ -80,5 +80,5 @@ export function filterByText(text) {
   eventBusService.emit("filter-by-text", text);
 }
 export function openCompose() {
-  eventBusService.emit("open-compose");
+  eventBusService.emit("compose");
 }

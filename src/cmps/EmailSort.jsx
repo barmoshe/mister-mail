@@ -4,6 +4,8 @@ export function EmailSort({ sortBy, onSetSort }) {
   const [sortByToEdit, setSortByToEdit] = useState(sortBy);
 
   useEffect(() => {
+    console.log("sortByToEdit", sortByToEdit);
+    console.log("sortBy", sortBy);
     onSetSort(sortByToEdit);
   }, [sortByToEdit]);
 

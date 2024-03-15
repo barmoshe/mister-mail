@@ -9,16 +9,32 @@ export const emailService = {
   getById,
   remove,
   save,
+  createDraft,
+  saveDraft,
+  isEmptyDraft,
+  getEmptyEmailDraft,
   getDefaultFilter,
+  getFromParamsAndFolder,
+  countUnreadEmails,
 };
-const STORAGE_KEY = "emails_db";
+const STORAGE_KEY = "email_db";
 _createEmails();
 
 async function query(filterBy = getDefaultFilter(), sortBy = "sentAt") {
   let emails = await storageService.query(STORAGE_KEY);
+  console.log(
+    "drafts count",
+    emails.reduce((acc, email) => {
+      if (email.isDraft) {
+        acc++;
+      }
+      return acc;
+    }, 0)
+  );
   emails = _filter(emails, filterBy);
+  console.log("emails size after filter", emails.length);
   emails.sort((a, b) => {
-    if (a[sortBy] > b[sortBy]) return 1;
+    if (a[sortBy] > b[sortBy]) return -1;
     if (a[sortBy] < b[sortBy]) return -1;
     return 0;
   });
@@ -38,19 +54,58 @@ async function save(email) {
     return await storageService.post(STORAGE_KEY, email);
   }
 }
+function createDraft(email) {
+  const { to, subject, body } = email;
+  return {
+    id: "e" + utilService.makeId(),
+    subject,
+    body,
+    isRead: false,
+    isStarred: false,
+    sentAt: false,
+    from: loggedInUser.email,
+    to,
+    isDraft: true,
+    removedAt: false,
+  };
+}
+async function saveDraft(email) {
+  console.log("draft saved");
+  return await storageService.post(STORAGE_KEY, email);
+}
 
 function getDefaultFilter(folder = "inbox") {
   return {
     folder: folder,
     txt: "",
-    isRead: null,
+    isRead: "all",
   };
 }
-
+function isEmptyDraft(email) {
+  return email.to === "" && email.subject === "" && email.body === "";
+}
+function getFromParamsAndFolder(searchParams, folder) {
+  const filterBy = {
+    folder: folder,
+    txt: searchParams.get("txt") || "",
+    isRead: searchParams.get("isRead") || "all",
+  };
+  return filterBy;
+}
+function getEmptyEmailDraft() {
+  return {
+    to: "",
+    from: loggedInUser.email,
+    subject: "",
+    body: "",
+    isDraft: true,
+  };
+}
 function _createEmails() {
   let emails = utilService.loadFromStorage(STORAGE_KEY);
   if (!emails || !emails.length) {
-    emails = _generateDemoEmails(10);
+    const numEmails = prompt("How many demo emails would you like to create?");
+    emails = _generateDemoEmails(+numEmails);
 
     utilService.saveToStorage(STORAGE_KEY, emails);
   }
@@ -117,27 +172,68 @@ function _generateDemoEmails(numEmails) {
 
   return emails;
 }
+async function countUnreadEmails() {
+  const emails = await storageService.query(STORAGE_KEY);
+  return emails.filter((email) => !email.isRead).length;
+}
 
 function _filter(emails, filterBy) {
   const { folder, txt, isRead } = filterBy;
-
   let filteredEmails = filterByText(emails, txt);
   filteredEmails = filterByReadStatus(filteredEmails, isRead);
-
+  let filterParams = {};
   switch (folder) {
     case "inbox":
-      return filterByFolder(filteredEmails, loggedInUser.email, false, false);
-    case "sent":
-      return filterByFolder(filteredEmails, loggedInUser.email, true, false);
+      filterParams = {
+        userEmail: loggedInUser.email,
+        isSent: false,
+        isStarred: false,
+        isTrash: false,
+        isDraft: false,
+      };
+      break;
     case "starred":
-      return filterByFolder(filteredEmails, null, false, true);
+      filterParams = {
+        userEmail: loggedInUser.email,
+        isSent: false,
+        isStarred: true,
+        isTrash: false,
+        isDraft: false,
+      };
+      break;
+    case "sent":
+      filterParams = {
+        userEmail: loggedInUser.email,
+        isSent: true,
+        isStarred: false,
+        isTrash: false,
+        isDraft: false,
+      };
+      break;
     case "drafts":
-      return filterByFolder(filteredEmails, null, false, false);
+      filterParams = {
+        userEmail: loggedInUser.email,
+        isSent: false,
+        isStarred: false,
+        isTrash: false,
+        isDraft: true,
+      };
+      break;
     case "trash":
-      return filterByFolder(filteredEmails, null, false, false, true);
+      filterParams = {
+        userEmail: loggedInUser.email,
+        isSent: false,
+        isStarred: false,
+        isTrash: true,
+        isDraft: false,
+      };
+      break;
     default:
-      return filteredEmails;
+      break;
   }
+  filteredEmails = filterByFolder(filteredEmails, filterParams);
+
+  return filteredEmails;
 }
 
 function filterByText(emails, txt) {
@@ -164,13 +260,39 @@ function filterByReadStatus(emails, isRead) {
   }
 }
 
-function filterByFolder(emails, userEmail, isSent, isStarred, isTrash) {
-  return emails.filter((email) => {
-    if (isTrash && email.removedAt) return true;
-    if (!isTrash && email.removedAt) return false;
-    if (isSent && email.from === userEmail) return true;
-    if (!isSent && email.to === userEmail) return true;
-    if (isStarred && email.isStarred) return true;
-    return false;
+function filterByFolder(filteredEmails, filterParams) {
+  const { userEmail, isSent, isStarred, isTrash, isDraft } = filterParams;
+  return filteredEmails.filter((email) => {
+    //trashCase
+    if (isTrash) {
+      console.log("trash case", email.removedAt);
+      return email.removedAt;
+    }
+
+    //inboxCase
+    if (!isSent && !isTrash && !isDraft) {
+      //starredCase
+      if (isStarred) {
+        return email.isStarred;
+      }
+      return (
+        email.to === userEmail &&
+        !email.isDraft &&
+        !email.removedAt &&
+        !email.isSent
+      );
+    }
+
+    //sentCase
+    if (isSent) {
+      return email.from === userEmail && !email.isDraft;
+    }
+    //draftsCase
+    if (isDraft) {
+      return email.from === userEmail && email.isDraft && !email.removedAt;
+    }
+
+    // Default case: return unfiltered emails
+    return true;
   });
 }

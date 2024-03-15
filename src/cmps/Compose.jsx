@@ -1,64 +1,128 @@
-// Compose.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { emailService } from "./../services/email.service.js";
 
-export function Compose({ onClose }) {
-  const [newEmail, setNewEmail] = useState({
-    to: "",
-    subject: "",
-    body: "",
-  });
+import { useSearchParams } from "react-router-dom";
+
+export function Compose({ onSendEmail, onCloseCompose, onSaveDraft }) {
+  const [viewState, setViewState] = useState("normal"); // State to track view state
+  const [email, setEmail] = useState(emailService.getEmptyEmailDraft());
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewEmail((prevEmail) => ({ ...prevEmail, [name]: value }));
+    setEmail((prevEmail) => ({
+      ...prevEmail,
+      [name]: value,
+    }));
+    handleDraftChange(email);
   };
 
-  const handleSend = async () => {
-    try {
-      // Add any additional logic or validation here
-      await emailService.send(newEmail);
-      onClose(); // Close the compose window after sending the email
-    } catch (err) {
-      console.log("Error sending email:", err);
-    }
+  const handleSubmit = async (e) => {
+    // e.preventDefault();
+    // try {
+    //   await emailService.save(email);
+    //   onSendEmail(email);
+    //   setEmail({
+    //     id: "new",
+    //     to: "",
+    //     subject: "",
+    //     body: "",
+    //   });
+    //   onCloseCompose();
+    // } catch (error) {
+    //   console.error("Error sending email:", error);
+    // }
   };
+
+  const handleMinimize = () => {
+    setViewState("minimized");
+  };
+
+  const handleMaximize = () => {
+    setViewState("fullscreen");
+  };
+
+  const handleRestore = () => {
+    setViewState("normal");
+  };
+
+  const handleClose = () => {
+    setEmail({ ...emailService.getEmptyEmailDraft(), id: false });
+    onCloseCompose();
+  };
+
+  async function handleDraftChange(email) {
+    if (email.id === "new") {
+      delete email.id;
+    }
+    email.sentAt = Date.now();
+    console.log("email id from compose on draft change", email.id);
+    console.log("date", email.Date);
+
+    const savedDraft = await emailService.save(email);
+    console.log("savedDraft", savedDraft);
+    setEmail((prevEmail) => ({ ...prevEmail, id: savedDraft.id }));
+    onSaveDraft(savedDraft);
+  }
 
   return (
-    <div className="compose-overlay">
-      <div className="compose-modal">
-        <h2>Compose New Email</h2>
-        <label>
-          To:
-          <input
-            type="text"
-            name="to"
-            value={newEmail.to}
-            onChange={handleInputChange}
-          />
-        </label>
-        <label>
-          Subject:
-          <input
-            type="text"
-            name="subject"
-            value={newEmail.subject}
-            onChange={handleInputChange}
-          />
-        </label>
-        <label>
-          Body:
-          <textarea
-            name="body"
-            value={newEmail.body}
-            onChange={handleInputChange}
-          />
-        </label>
-        <button onClick={handleSend}>Send</button>
-        <button className="cancel" onClick={onClose}>
-          Cancel
+    <div className={`compose ${viewState}`}>
+      {viewState === "minimized" && (
+        <button type="button" onClick={handleRestore}>
+          Restore
         </button>
-      </div>
+      )}
+
+      {viewState !== "minimized" && (
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="to">To:</label>
+          <input
+            type="email"
+            id="to"
+            name="to"
+            value={email.to}
+            onChange={handleInputChange}
+            required
+          />
+          <label htmlFor="subject">Subject:</label>
+          <input
+            type="text"
+            id="subject"
+            name="subject"
+            value={email.subject}
+            onChange={handleInputChange}
+            required
+          />
+          <label htmlFor="body">Body:</label>
+          <textarea
+            id="body"
+            name="body"
+            value={email.body}
+            onChange={handleInputChange}
+            required
+          ></textarea>
+          <div className="compose-actions">
+            <button type="submit">Send</button>
+            <button type="button" onClick={handleClose}>
+              Cancel
+            </button>
+            {viewState === "normal" && (
+              <button type="button" onClick={handleMinimize}>
+                Minimize
+              </button>
+            )}
+            {viewState === "normal" && (
+              <button type="button" onClick={handleMaximize}>
+                Fullscreen
+              </button>
+            )}
+            {viewState !== "normal" && (
+              <button type="button" onClick={handleRestore}>
+                Restore
+              </button>
+            )}
+          </div>
+        </form>
+      )}
     </div>
   );
 }

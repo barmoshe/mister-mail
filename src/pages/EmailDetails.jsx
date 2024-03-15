@@ -43,6 +43,11 @@ export function EmailDetails() {
         </div>
         <div className="email-details-body">
           <p>{email.body}</p>
+          <p>{email.isDraft && "Draft"}</p>
+          <p>email id {email.id}</p>
+          <p>email isRead {email.isRead ? "Read" : "Unread"}</p>
+          <p>email isStarred {email.isStarred ? "Starred" : "Not Starred"}</p>
+          <p>email removedAt {email.removedAt ? "Removed" : "Not Removed"}</p>
         </div>
       </div>
       <div className="email-details-footer">

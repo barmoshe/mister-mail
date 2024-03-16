@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Outlet, useSearchParams } from "react-router-dom";
 import { emailService } from "./../services/email.service.js";
+import { utilService } from "./../services/util.service.js";
 import { eventBusService } from "../services/event-bus.service.js";
 
 import { EmailList } from "./../cmps/EmailList.jsx";
@@ -42,6 +43,11 @@ export function NewEmailIndex() {
     loadEmails();
   }, [filterBy, sortBy]);
 
+  useEffect(() => {
+    console.log("emails changed1");
+    console.table(emails);
+  }, [emails]);
+
   function cleanFilterAndSort(filterBy, sortBy) {
     const cleanFilter = { ...filterBy };
     delete cleanFilter.folder;
@@ -75,30 +81,59 @@ export function NewEmailIndex() {
 
   async function onUpdateEmail(email) {
     try {
-      await emailService.save(email);
+      const savedEmail = await emailService.save(email);
       setEmails((prevEmails) =>
         prevEmails.map((currEmail) =>
           currEmail.id === email.id ? email : currEmail
         )
       );
+      return savedEmail;
     } catch (err) {
       console.log("Error in onUpdateEmail", err);
     }
   }
+  async function handleSendEmail(email) {
+    email.sentAt = Date.now();
+    email.isDraft = false;
+    console.log("email sent : ", email);
+    try {
+      const addedEmail = await onUpdateEmail(email);
+      if (filterBy.folder === "sent") setEmails((prevEmails) => [addedEmail]);
+      if (filterBy.folder === "drafts")
+        setEmails((prevEmails) =>
+          prevEmails.filter((currEmail) => currEmail.id !== email.id)
+        );
+      return addedEmail;
+    } catch (err) {
+      console.log("Error in onAddEmail", err);
+    }
+    setComposeMode("false");
+  }
 
-  async function onSendEmail(email) {}
+  async function handleSaveEmail(savedDraft) {
+    savedDraft.sentAt = Date.now();
+    if (savedDraft.id === "new" || !savedDraft.id) {
+      const newDraft = await emailService.createDraft(savedDraft);
+      if (filterBy.folder === "drafts")
+        setEmails((prevEmails) => [...prevEmails, newDraft]);
+      setComposeMode(newDraft.id);
+      return newDraft;
+    }
+    console.log("savedDraft", savedDraft.id);
+    try {
+      const addedEmail = await emailService.save(savedDraft);
+      if (filterBy.folder === "drafts")
+        setEmails((prevEmails) =>
+          prevEmails.map((currEmail) =>
+            currEmail.id === savedDraft.id ? addedEmail : currEmail
+          )
+        );
 
-  async function onSaveDraft(savedDraft) {
-    if (emailService.isEmptyDraft(savedDraft)) {
-      setComposeMode("new");
-      setEmails((prevEmails) => [savedDraft, ...prevEmails]);
-    } else setComposeMode(savedDraft.id);
-    //update the changed draft in the emails list
-    setEmails((prevEmails) =>
-      prevEmails.map((currEmail) =>
-        currEmail.id === savedDraft.id ? savedDraft : currEmail
-      )
-    );
+      setComposeMode(addedEmail.id);
+      return addedEmail;
+    } catch (err) {
+      console.log("Error in onAddEmail", err);
+    }
   }
 
   function onSetFilter(fieldsToUpdate) {
@@ -145,11 +180,9 @@ export function NewEmailIndex() {
       </div>
       {composeMode !== "false" && composeMode !== "" && composeMode && (
         <Compose
-          onSendEmail={onSendEmail}
+          handleSendEmail={handleSendEmail}
+          handleSaveEmail={handleSaveEmail}
           onCloseCompose={handleCloseCompose}
-          setComposeMode={setComposeMode}
-          onUpdateEmail={onUpdateEmail}
-          onSaveDraft={onSaveDraft}
         />
       )}
     </section>

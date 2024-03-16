@@ -2,10 +2,32 @@ import React, { useEffect, useState } from "react";
 import { emailService } from "./../services/email.service.js";
 
 import { useSearchParams } from "react-router-dom";
-
-export function Compose({ onSendEmail, onCloseCompose, onSaveDraft }) {
+//same as robotEdit
+export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [viewState, setViewState] = useState("normal"); // State to track view state
   const [email, setEmail] = useState(emailService.getEmptyEmailDraft());
+
+  useEffect(() => {
+    if (searchParams.get("compose"))
+      if (searchParams.get("compose") !== "new") loadEmail();
+  }, []);
+
+  useEffect(() => {
+    console.log("email  changed", { ...email });
+  }, [email]);
+  async function loadEmail() {
+    try {
+      const email = await emailService.getById(searchParams.get("compose"));
+      if (email.isDraft) {
+        setEmail(email);
+      } else {
+        setEmail(emailService.getEmptyEmailDraft());
+      }
+    } catch (err) {
+      console.log("email not found", err);
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -13,24 +35,24 @@ export function Compose({ onSendEmail, onCloseCompose, onSaveDraft }) {
       ...prevEmail,
       [name]: value,
     }));
-    handleDraftChange(email);
+    onSaveEmail({ ...email, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    // e.preventDefault();
-    // try {
-    //   await emailService.save(email);
-    //   onSendEmail(email);
-    //   setEmail({
-    //     id: "new",
-    //     to: "",
-    //     subject: "",
-    //     body: "",
-    //   });
-    //   onCloseCompose();
-    // } catch (error) {
-    //   console.error("Error sending email:", error);
-    // }
+  const onSendEmail = (e) => {
+    e.preventDefault();
+    handleSendEmail(email);
+    setEmail(emailService.getEmptyEmailDraft());
+  };
+
+  async function onSaveEmail(email) {
+    const emailSaved = await handleSaveEmail(email);
+    if (email.id === "new") {
+      setEmail({ ...email, id: emailSaved.id });
+    }
+  }
+
+  const handleClose = () => {
+    onCloseCompose();
   };
 
   const handleMinimize = () => {
@@ -45,25 +67,6 @@ export function Compose({ onSendEmail, onCloseCompose, onSaveDraft }) {
     setViewState("normal");
   };
 
-  const handleClose = () => {
-    setEmail({ ...emailService.getEmptyEmailDraft(), id: false });
-    onCloseCompose();
-  };
-
-  async function handleDraftChange(email) {
-    if (email.id === "new") {
-      delete email.id;
-    }
-    email.sentAt = Date.now();
-    console.log("email id from compose on draft change", email.id);
-    console.log("date", email.Date);
-
-    const savedDraft = await emailService.save(email);
-    console.log("savedDraft", savedDraft);
-    setEmail((prevEmail) => ({ ...prevEmail, id: savedDraft.id }));
-    onSaveDraft(savedDraft);
-  }
-
   return (
     <div className={`compose ${viewState}`}>
       {viewState === "minimized" && (
@@ -73,7 +76,7 @@ export function Compose({ onSendEmail, onCloseCompose, onSaveDraft }) {
       )}
 
       {viewState !== "minimized" && (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={onSendEmail}>
           <label htmlFor="to">To:</label>
           <input
             type="email"

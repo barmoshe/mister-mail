@@ -10,7 +10,6 @@ export const emailService = {
   remove,
   save,
   createDraft,
-  saveDraft,
   isEmptyDraft,
   getEmptyEmailDraft,
   getDefaultFilter,
@@ -54,10 +53,9 @@ async function save(email) {
     return await storageService.post(STORAGE_KEY, email);
   }
 }
-function createDraft(email) {
+async function createDraft(email) {
   const { to, subject, body } = email;
-  return {
-    id: "e" + utilService.makeId(),
+  return await storageService.post(STORAGE_KEY, {
     subject,
     body,
     isRead: false,
@@ -67,11 +65,7 @@ function createDraft(email) {
     to,
     isDraft: true,
     removedAt: false,
-  };
-}
-async function saveDraft(email) {
-  console.log("draft saved");
-  return await storageService.post(STORAGE_KEY, email);
+  });
 }
 
 function getDefaultFilter(folder = "inbox") {
@@ -82,7 +76,12 @@ function getDefaultFilter(folder = "inbox") {
   };
 }
 function isEmptyDraft(email) {
-  return email.to === "" && email.subject === "" && email.body === "";
+  return (
+    email.to === "" &&
+    email.subject === "" &&
+    email.body === "" &&
+    email.id === "new"
+  );
 }
 function getFromParamsAndFolder(searchParams, folder) {
   const filterBy = {
@@ -94,6 +93,7 @@ function getFromParamsAndFolder(searchParams, folder) {
 }
 function getEmptyEmailDraft() {
   return {
+    id: "new",
     to: "",
     from: loggedInUser.email,
     subject: "",

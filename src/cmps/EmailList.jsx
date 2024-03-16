@@ -24,7 +24,7 @@ export function EmailList({ emails, onRemoveEmail, onUpdateEmail }) {
     onUpdateEmail(email);
   }
 
-  return emails.length === 0 ? (
+  return emails?.length === 0 || !emails ? (
     <div className="empty-emails">No emails to show</div>
   ) : (
     <div className="email-table-grid">

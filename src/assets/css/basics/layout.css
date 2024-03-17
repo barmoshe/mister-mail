@@ -4,3 +4,19 @@
   grid-template-rows: min-content auto;
   height: 100vh;
 }
+
+@media (max-width: 768px) {
+  /* Styles for screens up to 768px wide (typically tablets and smaller devices) */
+  .main-layout {
+    grid-template-columns: 1fr; /* Adjust layout for smaller screens */
+    grid-template-rows: min-content auto;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Styles for screens up to 576px wide (typically smartphones) */
+  .main-layout {
+    grid-template-columns: 1fr; /* Adjust layout for very small screens */
+    grid-template-rows: min-content auto;
+  }
+}

@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { emailService } from "./../services/email.service.js";
 import { useSearchParams } from "react-router-dom";
+import { FaExpand, FaMinimize, FaCompress } from "react-icons/fa6";
+import { IoClose } from "react-icons/io5";
 
-// Component
 export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
-  // State initialization
   const [searchParams, setSearchParams] = useSearchParams();
   const [viewState, setViewState] = useState("normal");
   const [email, setEmail] = useState(emailService.getEmptyEmailDraft());
 
-  // Effects
   useEffect(() => {
     if (searchParams.get("compose") && searchParams.get("compose") !== "new") {
       loadEmail();
     }
   }, []);
 
-  // Functions
   async function loadEmail() {
     try {
       const loadedEmail = await emailService.getById(
@@ -59,93 +57,67 @@ export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
   };
 
   const handleMaximize = () => {
-    setViewState("fullscreen");
+    if (viewState !== "normal") {
+      setViewState("normal");
+    } else {
+      setViewState("fullscreen");
+    }
   };
 
   const handleRestore = () => {
     setViewState("normal");
   };
 
-  // Rendering
   return (
     <div className={`compose ${viewState}`}>
-      {viewState === "minimized" && (
-        <button type="button" onClick={handleRestore}>
-          Restore
-        </button>
-      )}
+      <div className="compose-header">
+        <div className="compose-header-actions">
+          <button onClick={handleMinimize}>
+            {viewState !== "minimized" && <FaMinimize />}
+          </button>
 
-      {viewState !== "minimized" && (
-        <form onSubmit={onSendEmail} className="gmail-compose">
-          <div className="gmail-compose-header">
+          <button onClick={handleMaximize}>
+            {viewState === "fullscreen" ? <FaCompress /> : <FaExpand />}
+          </button>
+          <button onClick={handleClose}>
+            {" "}
+            <IoClose />
+          </button>
+        </div>
+      </div>
+      <div className="compose-body">
+        {viewState !== "minimized" && (
+          <form className={`compose-form ${viewState}`} onSubmit={onSendEmail}>
+            <label htmlFor="to">To:</label>
             <input
               type="email"
               id="to"
               name="to"
               value={email.to}
               onChange={handleInputChange}
-              placeholder="To"
               required
             />
+            <label htmlFor="subject">Subject:</label>
             <input
               type="text"
               id="subject"
               name="subject"
               value={email.subject}
               onChange={handleInputChange}
-              placeholder="Subject"
               required
             />
-          </div>
-          <textarea
-            id="body"
-            name="body"
-            value={email.body}
-            onChange={handleInputChange}
-            placeholder="Compose email..."
-            required
-          ></textarea>
-          <div className="gmail-compose-footer">
-            <button type="submit" className="gmail-send-button">
-              Send
-            </button>
-            <button
-              type="button"
-              onClick={handleClose}
-              className="gmail-close-button"
-            >
-              Discard
-            </button>
-          </div>
-          {viewState === "normal" && (
-            <div className="gmail-compose-controls">
-              <button
-                type="button"
-                onClick={handleMinimize}
-                className="gmail-minimize-button"
-              >
-                Minimize
-              </button>
-              <button
-                type="button"
-                onClick={handleMaximize}
-                className="gmail-maximize-button"
-              >
-                Fullscreen
-              </button>
-            </div>
-          )}
-          {viewState !== "normal" && (
-            <button
-              type="button"
-              onClick={handleRestore}
-              className="gmail-restore-button"
-            >
-              Restore
-            </button>
-          )}
-        </form>
-      )}
+            <label htmlFor="body">Body:</label>
+            <textarea
+              id="body"
+              name="body"
+              value={email.body}
+              onChange={handleInputChange}
+              required
+            ></textarea>
+            <button type="submit">Send</button>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

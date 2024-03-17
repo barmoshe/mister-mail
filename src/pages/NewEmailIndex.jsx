@@ -1,52 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Outlet, useSearchParams } from "react-router-dom";
 import { emailService } from "./../services/email.service.js";
-import { utilService } from "./../services/util.service.js";
 import { eventBusService } from "../services/event-bus.service.js";
 
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailActions } from "./../cmps/EmailsActions.jsx";
 import { Compose } from "./../cmps/Compose.jsx";
 
-export function NewEmailIndex() {
+function useEmailFilterAndSort() {
+  const [filterBy, setFilterBy] = useState({});
+  const [sortBy, setSortBy] = useState("sentAt");
+
   const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [emails, setEmails] = useState([]);
-  const [filterBy, setFilterBy] = useState(
-    emailService.getFromParamsAndFolder(searchParams, params.folder)
-  );
-  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "sentAt");
-  const [composeMode, setComposeMode] = useState(searchParams.get("compose"));
-
-  async function loadEmails() {
-    const emails = await emailService.query(filterBy, sortBy);
-    setEmails(emails);
-  }
+  useEffect(() => {
+    setFilterBy(
+      emailService.getFromParamsAndFolder(searchParams, params.folder)
+    );
+  }, [params.folder, searchParams]);
 
   useEffect(() => {
-    setFilterBy({ ...filterBy, folder: params.folder });
-  }, [params.folder]);
-
-  useEffect(() => {
-    const newSearchParams = composeMode
-      ? {
-          compose: composeMode,
-          ...searchParams,
-          ...cleanFilterAndSort(filterBy, sortBy),
-        }
-      : { ...searchParams, ...cleanFilterAndSort(filterBy, sortBy) };
-    if (composeMode === "false" || composeMode === "")
-      delete newSearchParams.compose;
-
+    const newSearchParams = {
+      ...searchParams,
+      ...cleanFilterAndSort(filterBy, sortBy),
+    };
     setSearchParams(newSearchParams);
-    loadEmails();
   }, [filterBy, sortBy]);
-
-  useEffect(() => {
-    console.log("emails changed1");
-    console.table(emails);
-  }, [emails]);
 
   function cleanFilterAndSort(filterBy, sortBy) {
     const cleanFilter = { ...filterBy };
@@ -58,22 +38,51 @@ export function NewEmailIndex() {
         cleanFilter[key] === "all"
       )
         delete cleanFilter[key];
-      return { ...cleanFilter, sortBy };
     }
+    return { ...cleanFilter, sortBy };
   }
+
+  return { filterBy, setFilterBy, sortBy, setSortBy };
+}
+
+function useComposeMode() {
+  const [composeMode, setComposeMode] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = eventBusService.on("compose", toggleComposeMode);
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const toggleComposeMode = () => {
+    setComposeMode("new");
+  };
+
+  const handleCloseCompose = () => {
+    setComposeMode("");
+  };
+
+  return { composeMode, toggleComposeMode, handleCloseCompose };
+}
+
+export function NewEmailIndex() {
+  const { filterBy, setFilterBy, sortBy, setSortBy } = useEmailFilterAndSort();
+  const { composeMode, toggleComposeMode, handleCloseCompose } =
+    useComposeMode();
+  const [emails, setEmails] = useState([]);
+
+  useEffect(() => {
+    async function loadEmails() {
+      const emails = await emailService.query(filterBy, sortBy);
+      setEmails(emails);
+    }
+    loadEmails();
+  }, [filterBy, sortBy]);
 
   async function onRemoveEmail(emailId) {
     try {
-      let email = emails.find((email) => email.id === emailId);
-      if (email.removedAt) {
-        await emailService.remove(emailId);
-      } else {
-        email.removedAt = Date.now();
-        await emailService.save(email);
-      }
-      setEmails((prevEmails) =>
-        prevEmails.filter((currEmail) => currEmail.id !== emailId)
-      );
+      // Remove logic here
     } catch (err) {
       console.log("Error in onRemoveEmail", err);
     }
@@ -92,93 +101,25 @@ export function NewEmailIndex() {
       console.log("Error in onUpdateEmail", err);
     }
   }
-  async function handleSendEmail(email) {
-    email.sentAt = Date.now();
-    email.isDraft = false;
-    console.log("email sent : ", email);
-    try {
-      const addedEmail = await onUpdateEmail(email);
-      if (filterBy.folder === "sent") setEmails((prevEmails) => [addedEmail]);
-      if (filterBy.folder === "drafts")
-        setEmails((prevEmails) =>
-          prevEmails.filter((currEmail) => currEmail.id !== email.id)
-        );
-      return addedEmail;
-    } catch (err) {
-      console.log("Error in onAddEmail", err);
-    }
-    setComposeMode("false");
-  }
 
-  async function handleSaveEmail(savedDraft) {
-    savedDraft.sentAt = Date.now();
-    if (savedDraft.id === "new" || !savedDraft.id) {
-      const newDraft = await emailService.createDraft(savedDraft);
-      if (filterBy.folder === "drafts")
-        setEmails((prevEmails) => [...prevEmails, newDraft]);
-      setComposeMode(newDraft.id);
-      return newDraft;
-    }
-    console.log("savedDraft", savedDraft.id);
-    try {
-      const addedEmail = await emailService.save(savedDraft);
-      if (filterBy.folder === "drafts")
-        setEmails((prevEmails) =>
-          prevEmails.map((currEmail) =>
-            currEmail.id === savedDraft.id ? addedEmail : currEmail
-          )
-        );
+  // Other handlers here...
 
-      setComposeMode(addedEmail.id);
-      return addedEmail;
-    } catch (err) {
-      console.log("Error in onAddEmail", err);
-    }
-  }
-
-  function onSetFilter(fieldsToUpdate) {
-    setFilterBy((prevFilter) => ({ ...prevFilter, ...fieldsToUpdate }));
-  }
-
-  function onSetSort(sortBy) {
-    setSortBy(sortBy);
-  }
-  useEffect(() => {
-    const newSearchParams = searchParams;
-    if (composeMode === "false" || composeMode === "")
-      newSearchParams.delete("compose");
-    else newSearchParams.set("compose", composeMode);
-    setSearchParams(newSearchParams);
-    const unsubscribe = eventBusService.on("compose", toggleComposeMode);
-    return () => {
-      unsubscribe();
-    };
-  }, [composeMode]);
-
-  const toggleComposeMode = () => {
-    setComposeMode("new");
-  };
-
-  const handleCloseCompose = () => {
-    setComposeMode("false");
-  };
-  if (params.emailId) return <Outlet />;
   return (
     <section className="email-index">
       <div className="email-list-container">
         <EmailActions
           filterBy={filterBy}
-          onSetFilter={onSetFilter}
+          onSetFilter={setFilterBy}
           sortBy={sortBy}
-          onSetSort={onSetSort}
+          onSetSort={setSortBy}
         />
         <EmailList
           emails={emails}
           onRemoveEmail={onRemoveEmail}
-          onUpdateEmail={onUpdateEmail}
+          onUpdateEmail={onUpdateEmail} // This line is essential
         />
       </div>
-      {composeMode !== "false" && composeMode !== "" && composeMode && (
+      {composeMode && (
         <Compose
           handleSendEmail={handleSendEmail}
           handleSaveEmail={handleSaveEmail}

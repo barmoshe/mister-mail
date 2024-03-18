@@ -13,16 +13,14 @@ export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
     if (searchParams.get("compose") && searchParams.get("compose") !== "new") {
       loadEmail();
     }
-  }, []);
+  }, [searchParams.get("compose")]);
 
   async function loadEmail() {
     try {
       const loadedEmail = await emailService.getById(
         searchParams.get("compose")
       );
-      setEmail(
-        loadedEmail.isDraft ? loadedEmail : emailService.getEmptyEmailDraft()
-      );
+      setEmail(loadedEmail);
     } catch (err) {
       console.log("Error loading email:", err);
       onCloseCompose();
@@ -42,6 +40,9 @@ export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
   };
 
   async function onSaveEmail(email) {
+    // if (!email.isdraft) {
+    //   email.isdraft = true;
+    // }
     const savedEmail = await handleSaveEmail(email);
     if (email.id === "new") {
       setEmail({ ...email, id: savedEmail.id });

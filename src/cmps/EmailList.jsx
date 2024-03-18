@@ -2,9 +2,14 @@ import { Link, useLocation } from "react-router-dom";
 
 import { EmailPreview } from "./EmailPreview.jsx";
 
-import { FaRegStar as Star } from "react-icons/fa6";
+import { FaRegStar as Star, FaPencil as Edit } from "react-icons/fa6";
 
-export function EmailList({ emails, onRemoveEmail, onUpdateEmail }) {
+export function EmailList({
+  emails,
+  onRemoveEmail,
+  onUpdateEmail,
+  onEditEmail,
+}) {
   const location = useLocation();
   function className(email) {
     return email.isRead
@@ -31,7 +36,6 @@ export function EmailList({ emails, onRemoveEmail, onUpdateEmail }) {
       {emails.map((email) => (
         <article key={email.id} className={className(email)}>
           <div className="email-actions ">
-            <input className="select-email" type="checkbox" />
             <button
               className={starClassName(email.isStarred)}
               onClick={() => {
@@ -40,11 +44,12 @@ export function EmailList({ emails, onRemoveEmail, onUpdateEmail }) {
             >
               <Star />
             </button>
+
             <button
-              className="change-read-status"
-              onClick={() => changeReadStatus(email)}
+              className="edit-email"
+              onClick={() => onEditEmail(email.id)}
             >
-              {email.isRead ? "v" : "u"}
+              <Edit />
             </button>
           </div>
           <Link to={`${location.pathname}/${email.id}`}>

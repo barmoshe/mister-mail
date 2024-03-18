@@ -7,6 +7,7 @@ import { eventBusService } from "../services/event-bus.service.js";
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailActions } from "./../cmps/EmailsActions.jsx";
 import { Compose } from "./../cmps/Compose.jsx";
+import { ProgressBar } from "./../cmps/ProgressBar.jsx";
 import { Context } from "../App.jsx";
 
 export function NewEmailIndex() {
@@ -115,7 +116,7 @@ export function NewEmailIndex() {
     console.log("email sent : ", email);
     try {
       const addedEmail = await onUpdateEmail(email);
-      if (filterBy.folder === "sent") setEmails((prevEmails) => [addedEmail]);
+      if (filterBy.folder === "sent") setEmails([addedEmail]);
       if (filterBy.folder === "drafts")
         setEmails((prevEmails) =>
           prevEmails.filter((currEmail) => currEmail.id !== email.id)
@@ -156,6 +157,9 @@ export function NewEmailIndex() {
   async function onSetUnreadInbox(emails) {
     const unreadInbox = await emailService.countUnreadEmails();
     setUnreadInbox(unreadInbox);
+  }
+  function onEditEmail(emailId) {
+    setComposeMode(emailId);
   }
 
   // Handler for setting filter
@@ -205,6 +209,7 @@ export function NewEmailIndex() {
           emails={emails}
           onRemoveEmail={onRemoveEmail}
           onUpdateEmail={onUpdateEmail}
+          onEditEmail={onEditEmail}
         />
       </div>
       {composeMode !== "false" && composeMode !== "" && composeMode && (
@@ -214,6 +219,10 @@ export function NewEmailIndex() {
           onCloseCompose={handleCloseCompose}
         />
       )}
+      <ProgressBar
+        value={emails.filter((email) => !email.isRead).length}
+        max={emails.length}
+      />
     </section>
   );
 }

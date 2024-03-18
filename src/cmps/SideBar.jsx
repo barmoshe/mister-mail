@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { eventBusService, openCompose } from "./../services/event-bus.service";
 
 import {
@@ -10,7 +10,10 @@ import {
 } from "react-icons/fa";
 import { NavLink, useLocation } from "react-router-dom";
 
+import { Context } from "../App";
+
 export function SideBar() {
+  const [unreadInbox, setUnreadInbox] = useContext(Context);
   const [openedItem, setOpenedItem] = useState(null);
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
   const location = useLocation();
@@ -67,7 +70,6 @@ export function SideBar() {
 
   function handleComposeClick() {
     openCompose();
-    
   }
 
   switch (isSideBarOpen) {
@@ -93,6 +95,7 @@ export function SideBar() {
                     <div className="folder-icon">{folder.icon}</div>
                     <div className="folder-name">
                       <h3>{folder.name}</h3>
+                      {folder.name === "Inbox" && <p>unread: {unreadInbox}</p>}
                     </div>
                   </div>
                 </NavLink>

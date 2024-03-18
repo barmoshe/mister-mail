@@ -7,6 +7,7 @@ import { eventBusService } from "../services/event-bus.service.js";
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailActions } from "./../cmps/EmailsActions.jsx";
 import { Compose } from "./../cmps/Compose.jsx";
+import { Context } from "../App.jsx";
 
 export function NewEmailIndex() {
   const params = useParams();
@@ -18,10 +19,12 @@ export function NewEmailIndex() {
   );
   const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "sentAt");
   const [composeMode, setComposeMode] = useState(searchParams.get("compose"));
+  const [unreadInbox, setUnreadInbox] = React.useContext(Context);
 
   async function loadEmails() {
     const emails = await emailService.query(filterBy, sortBy);
     setEmails(emails);
+    onSetUnreadInbox(emails);
   }
 
   // Effect for updating filterBy when params.folder changes
@@ -149,6 +152,10 @@ export function NewEmailIndex() {
     } catch (err) {
       console.log("Error in onAddEmail", err);
     }
+  }
+  async function onSetUnreadInbox(emails) {
+    const unreadInbox = await emailService.countUnreadEmails();
+    setUnreadInbox(unreadInbox);
   }
 
   // Handler for setting filter

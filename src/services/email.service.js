@@ -174,7 +174,9 @@ function _generateDemoEmails(numEmails) {
 }
 async function countUnreadEmails() {
   const emails = await storageService.query(STORAGE_KEY);
-  return emails.filter((email) => !email.isRead).length;
+  return emails.filter(
+    (email) => !email.isRead && email.to === loggedInUser.email
+  ).length;
 }
 
 function _filter(emails, filterBy) {

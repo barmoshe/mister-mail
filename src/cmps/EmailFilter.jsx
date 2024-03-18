@@ -22,6 +22,7 @@ export function EmailFilter({ filterBy, onSetFilter }) {
     const newValue = type === "number" ? +value : value;
     setFilterByToEdit((prevFilterBy) => ({
       ...prevFilterBy,
+      folder: filterBy.folder,
       [field]: newValue,
     }));
   }

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Outlet, useSearchParams } from "react-router-dom";
 import { emailService } from "./../services/email.service.js";
-import { utilService } from "./../services/util.service.js";
-import { eventBusService } from "../services/event-bus.service.js";
+import {
+  eventBusService,
+  showSuccessMsg,
+  showErrorMsg,
+  showUserMsg,
+} from "../services/event-bus.service.js";
 
 import { EmailList } from "./../cmps/EmailList.jsx";
 import { EmailActions } from "./../cmps/EmailsActions.jsx";
@@ -23,9 +27,14 @@ export function NewEmailIndex() {
   const [unreadInbox, setUnreadInbox] = React.useContext(Context);
 
   async function loadEmails() {
-    const emails = await emailService.query(filterBy, sortBy);
-    setEmails(emails);
-    onSetUnreadInbox(emails);
+    try {
+      const emails = await emailService.query(filterBy, sortBy);
+      setEmails(emails);
+      onSetUnreadInbox(emails);
+    } catch (error) {
+      showErrorMsg("Failed to load emails");
+      console.error("Error loading emails:", error);
+    }
   }
 
   // Effect for updating filterBy when params.folder changes
@@ -64,7 +73,7 @@ export function NewEmailIndex() {
 
   function cleanFilterAndSort(filterBy, sortBy) {
     const cleanFilter = { ...filterBy };
-    delete cleanFilter.folder;
+    // delete cleanFilter.folder;
     for (const key in cleanFilter) {
       if (
         cleanFilter[key] === "" ||
@@ -89,8 +98,10 @@ export function NewEmailIndex() {
       setEmails((prevEmails) =>
         prevEmails.filter((currEmail) => currEmail.id !== emailId)
       );
+      showSuccessMsg("Email removed successfully");
     } catch (err) {
-      console.log("Error in onRemoveEmail", err);
+      showErrorMsg("Failed to remove email");
+      console.error("Error removing email:", err);
     }
   }
 
@@ -103,9 +114,11 @@ export function NewEmailIndex() {
           currEmail.id === email.id ? email : currEmail
         )
       );
+      showSuccessMsg("Email updated successfully");
       return savedEmail;
     } catch (err) {
-      console.log("Error in onUpdateEmail", err);
+      showErrorMsg("Failed to update email");
+      console.error("Error updating email:", err);
     }
   }
 
@@ -121,9 +134,11 @@ export function NewEmailIndex() {
         setEmails((prevEmails) =>
           prevEmails.filter((currEmail) => currEmail.id !== email.id)
         );
+      showSuccessMsg("Email sent successfully");
       return addedEmail;
     } catch (err) {
-      console.log("Error in onAddEmail", err);
+      showErrorMsg("Failed to send email");
+      console.error("Error sending email:", err);
     }
     setComposeMode("false");
   }
@@ -132,32 +147,46 @@ export function NewEmailIndex() {
   async function handleSaveEmail(savedDraft) {
     savedDraft.sentAt = Date.now();
     if (savedDraft.id === "new" || !savedDraft.id) {
-      const newDraft = await emailService.createDraft(savedDraft);
-      if (filterBy.folder === "drafts")
-        setEmails((prevEmails) => [...prevEmails, newDraft]);
-      setComposeMode(newDraft.id);
-      return newDraft;
+      try {
+        const newDraft = await emailService.createDraft(savedDraft);
+        if (filterBy.folder === "drafts")
+          setEmails((prevEmails) => [...prevEmails, newDraft]);
+        setComposeMode(newDraft.id);
+        showSuccessMsg("Email draft saved successfully");
+        return newDraft;
+      } catch (err) {
+        showErrorMsg("Failed to save email draft");
+        console.error("Error saving email draft:", err);
+      }
+    } else {
+      try {
+        const addedEmail = await emailService.save(savedDraft);
+        if (filterBy.folder === "drafts")
+          setEmails((prevEmails) =>
+            prevEmails.map((currEmail) =>
+              currEmail.id === savedDraft.id ? addedEmail : currEmail
+            )
+          );
+        setComposeMode(addedEmail.id);
+        showSuccessMsg("Email draft updated successfully");
+        return addedEmail;
+      } catch (err) {
+        showErrorMsg("Failed to update email draft");
+        console.error("Error updating email draft:", err);
+      }
     }
-    console.log("savedDraft", savedDraft.id);
-    try {
-      const addedEmail = await emailService.save(savedDraft);
-      if (filterBy.folder === "drafts")
-        setEmails((prevEmails) =>
-          prevEmails.map((currEmail) =>
-            currEmail.id === savedDraft.id ? addedEmail : currEmail
-          )
-        );
+  }
 
-      setComposeMode(addedEmail.id);
-      return addedEmail;
-    } catch (err) {
-      console.log("Error in onAddEmail", err);
+  async function onSetUnreadInbox(emails) {
+    try {
+      const unreadInbox = await emailService.countUnreadEmails();
+      setUnreadInbox(unreadInbox);
+    } catch (error) {
+      showErrorMsg("Failed to set unread inbox");
+      console.error("Error setting unread inbox:", error);
     }
   }
-  async function onSetUnreadInbox(emails) {
-    const unreadInbox = await emailService.countUnreadEmails();
-    setUnreadInbox(unreadInbox);
-  }
+
   function onEditEmail(emailId) {
     setComposeMode(emailId);
   }
@@ -170,6 +199,7 @@ export function NewEmailIndex() {
   // Handler for setting sort
   function onSetSort(sortBy) {
     setSortBy(sortBy);
+    loadEmails();
   }
 
   // Handler for toggling compose mode

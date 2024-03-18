@@ -7,9 +7,10 @@ import {
 import { createContext, useState } from "react";
 
 import { HomePage } from "./pages/HomePage.jsx";
-import { EmailIndex } from "./pages/EmailIndex.jsx";
+// import { EmailIndex } from "./pages/EmailIndex.jsx";
 import { EmailDetails } from "./pages/EmailDetails.jsx";
 import { NewEmailIndex } from "./pages/NewEmailIndex.jsx";
+import { UserMsg } from "./cmps/UserMsg.jsx";
 
 import { AppHeader } from "./cmps/AppHeader.jsx";
 import { SideBar } from "./cmps/SideBar.jsx";
@@ -24,6 +25,7 @@ export function App() {
         <section className="main-layout">
           <AppHeader />
           <SideBar />
+          <UserMsg />
           <main className="container">
             <Routes>
               <Route path="/" element={<HomePage />} />

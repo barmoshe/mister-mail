@@ -40,9 +40,6 @@ export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
   };
 
   async function onSaveEmail(email) {
-    // if (!email.isdraft) {
-    //   email.isdraft = true;
-    // }
     const savedEmail = await handleSaveEmail(email);
     if (email.id === "new") {
       setEmail({ ...email, id: savedEmail.id });

@@ -21,19 +21,9 @@ _createEmails();
 
 async function query(filterBy = getDefaultFilter(), sortBy = "sentAt") {
   let emails = await storageService.query(STORAGE_KEY);
-  console.log(
-    "drafts count",
-    emails.reduce((acc, email) => {
-      if (email.isDraft) {
-        acc++;
-      }
-      return acc;
-    }, 0)
-  );
   emails = _filter(emails, filterBy);
-  console.log("emails size after filter", emails.length);
   emails.sort((a, b) => {
-    if (a[sortBy] > b[sortBy]) return -1;
+    if (a[sortBy] > b[sortBy]) return 1;
     if (a[sortBy] < b[sortBy]) return -1;
     return 0;
   });
@@ -267,7 +257,6 @@ function filterByFolder(filteredEmails, filterParams) {
   return filteredEmails.filter((email) => {
     //trashCase
     if (isTrash) {
-      console.log("trash case", email.removedAt);
       return email.removedAt;
     }
 

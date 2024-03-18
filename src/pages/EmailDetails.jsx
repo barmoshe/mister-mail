@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import { emailService } from "../services/email.service";
+import { Context } from "../App";
 
 export function EmailDetails() {
   const [email, setEmail] = useState(null);
   const params = useParams();
   const navigate = useNavigate();
+  const [unreadInbox, setUnreadInbox] = useContext(Context);
 
   useEffect(() => {
     loadEmail();
@@ -19,6 +21,7 @@ export function EmailDetails() {
       setEmail(email);
       email.isRead = true;
       await emailService.save(email);
+      onSetUnreadInbox();
     } catch (err) {
       navigate(-1);
       console.log("Error in loadEmail", err);
@@ -26,6 +29,10 @@ export function EmailDetails() {
   }
   async function handleBack() {
     navigate(-1);
+  }
+  async function onSetUnreadInbox() {
+    const unreadInbox = await emailService.countUnreadEmails();
+    setUnreadInbox(unreadInbox);
   }
 
   if (!email) return <div>Loading..</div>;

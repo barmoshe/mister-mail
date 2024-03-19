@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Outlet, useSearchParams } from "react-router-dom";
+import {
+  useParams,
+  Outlet,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import { emailService } from "./../services/email.service.js";
 import {
   eventBusService,
@@ -17,6 +22,7 @@ import { Context } from "../App.jsx";
 export function NewEmailIndex() {
   const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
   const [emails, setEmails] = useState([]);
   const [filterBy, setFilterBy] = useState(
@@ -53,9 +59,12 @@ export function NewEmailIndex() {
       : { ...searchParams, ...cleanFilterAndSort(filterBy, sortBy) };
     if (composeMode === "false" || composeMode === "")
       delete newSearchParams.compose;
+    if (filterBy.sentAt === null || filterBy.sentAt === "")
+      delete newSearchParams.sentAt;
 
     setSearchParams(newSearchParams);
     loadEmails();
+    console.table(filterBy);
   }, [filterBy, sortBy]);
 
   // Effect for toggling composeMode and updating searchParams
@@ -81,8 +90,8 @@ export function NewEmailIndex() {
         cleanFilter[key] === "all"
       )
         delete cleanFilter[key];
-      return { ...cleanFilter, sortBy };
     }
+    return { ...cleanFilter, sortBy };
   }
 
   // Handler for removing email

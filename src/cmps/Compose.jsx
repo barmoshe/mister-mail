@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { emailService } from "./../services/email.service.js";
 import { useSearchParams } from "react-router-dom";
 import { FaExpand, FaMinimize, FaCompress } from "react-icons/fa6";
@@ -8,6 +8,7 @@ export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [viewState, setViewState] = useState("normal");
   const [email, setEmail] = useState(emailService.getEmptyEmailDraft());
+  const currEmailId = useRef("new");
 
   useEffect(() => {
     if (searchParams.get("compose") && searchParams.get("compose") !== "new") {
@@ -29,22 +30,25 @@ export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEmail((prevEmail) => ({ ...prevEmail, [name]: value }));
-    onSaveEmail({ ...email, [name]: value });
+    setEmail((prevEmail) => ({
+      ...prevEmail,
+      id: currEmailId.current,
+      [name]: value,
+    }));
+    onSaveEmail({ ...email, id: currEmailId.current, [name]: value });
   };
+  async function onSaveEmail(email) {
+    const savedEmail = await handleSaveEmail(email);
+    if (email.id === "new") {
+      currEmailId.current = savedEmail.id;
+    }
+  }
 
   const onSendEmail = (e) => {
     e.preventDefault();
     handleSendEmail(email);
     setEmail(emailService.getEmptyEmailDraft());
   };
-
-  async function onSaveEmail(email) {
-    const savedEmail = await handleSaveEmail(email);
-    if (email.id === "new") {
-      setEmail({ ...email, id: savedEmail.id });
-    }
-  }
 
   const handleClose = () => {
     onCloseCompose();

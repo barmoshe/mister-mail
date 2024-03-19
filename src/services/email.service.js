@@ -63,7 +63,8 @@ function getDefaultFilter(folder = "inbox") {
     folder: folder,
     txt: "",
     isRead: "all",
-    sentAt: "",
+    startDay: "",
+    endDay: "",
   };
 }
 function isEmptyDraft(email) {
@@ -79,7 +80,8 @@ function getFromParamsAndFolder(searchParams, folder) {
     folder: folder,
     txt: searchParams.get("txt") || "",
     isRead: searchParams.get("isRead") || "all",
-    sentAt: searchParams.get("sentAt") || "",
+    startDay: searchParams.get("startDay") || "",
+    endDay: searchParams.get("endDay") || "",
   };
   return filterBy;
 }
@@ -172,10 +174,10 @@ async function countUnreadEmails() {
 }
 
 function _filter(emails, filterBy) {
-  const { folder, txt, isRead, sentAt } = filterBy;
+  const { folder, txt, isRead, startDay, endDay } = filterBy;
   let filteredEmails = filterByText(emails, txt);
   filteredEmails = filterByReadStatus(filteredEmails, isRead);
-  filteredEmails = filterBySentAt(filteredEmails, sentAt);
+  filteredEmails = filterByDate(filteredEmails, startDay, endDay);
   let filterParams = {};
   switch (folder) {
     case "inbox":
@@ -254,18 +256,28 @@ function filterByReadStatus(emails, isRead) {
       return emails;
   }
 }
-function filterBySentAt(emails, sentAt) {
-  if (sentAt) {
-    const date = new Date(sentAt);
+function filterByDate(emails, startDay, endDay) {
+  startDay = startDay ? new Date(startDay).getTime() : null;
+  endDay = endDay ? new Date(endDay).getTime() : null;
+
+  if (startDay && endDay) {
     return emails.filter((email) => {
-      const emailDate = new Date(email.sentAt);
-      return (
-        emailDate.getFullYear() === date.getFullYear() &&
-        emailDate.getMonth() === date.getMonth() &&
-        emailDate.getDate() === date.getDate()
+      console.log(
+        `email.sentAt >= startDay && email.sentAt <= endDay`,
+        email.sentAt >= startDay && email.sentAt <= endDay
       );
+      return email.sentAt >= startDay && email.sentAt <= endDay;
+    });
+  } else if (startDay) {
+    return emails.filter((email) => {
+      return email.sentAt >= startDay;
+    });
+  } else if (endDay) {
+    return emails.filter((email) => {
+      return email.sentAt <= endDay;
     });
   }
+
   return emails;
 }
 

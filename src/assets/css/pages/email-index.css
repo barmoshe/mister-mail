@@ -7,7 +7,6 @@
   display: grid;
   grid-template-columns: 1fr; /* One column */
   gap: 1px; /* Spacing between grid items */
-  padding: 10px; /* Add padding */
 }
 
 .email-list-container {

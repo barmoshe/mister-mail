@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { eventBusService } from "../services/event-bus.service";
 
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
 export function EmailFilter({ filterBy, onSetFilter }) {
   const [filterByToEdit, setFilterByToEdit] = useState(filterBy);
 
@@ -41,6 +39,20 @@ export function EmailFilter({ filterBy, onSetFilter }) {
         <option value="true">Read</option>
         <option value="false">Unread</option>
       </select>
+      <input
+        type="date"
+        id="startDay"
+        name="startDay"
+        value={filterByToEdit.startDay ? filterByToEdit.startDay : ""}
+        onChange={(ev) => handleChange(ev)}
+      />
+      <input
+        type="date"
+        id="endDay"
+        name="endDay"
+        value={filterByToEdit.endDay ? filterByToEdit.endDay : ""}
+        onChange={(ev) => handleChange(ev)}
+      />
     </div>
   );
 }

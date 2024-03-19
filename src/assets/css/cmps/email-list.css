@@ -9,9 +9,11 @@
   grid-template-columns: auto 1fr auto; /* Three columns: actions, content, and star */
   align-items: center; /* Align items vertically */
   padding: 2px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+
   transition: background-color 0.3s;
+}
+.email-preview-container:hover {
+  border: 1px solid #ccc;
 }
 .email-preview-container.unread {
   background-color: #f0f8ff; /* Light blue background for unread emails */
@@ -56,4 +58,8 @@
 }
 .email-preview-container:hover .date {
   display: none;
+}
+.email-list-scroll {
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 80svh;
 }

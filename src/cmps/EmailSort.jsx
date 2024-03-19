@@ -22,6 +22,8 @@ export function EmailSort({ sortBy, onSetSort }) {
       >
         <option value="sentAt">sentAt</option>
         <option value="subject">Subject</option>
+        <option value="from">From</option>
+        <option value="isRead">Read</option>
       </select>
     </div>
   );

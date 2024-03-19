@@ -32,39 +32,43 @@ export function EmailList({
   return emails?.length === 0 || !emails ? (
     <div className="empty-emails">No emails to show</div>
   ) : (
-    <div className="email-table-grid">
-      {emails.map((email) => (
-        <article key={email.id} className={className(email)}>
-          <div className="email-actions ">
+    <div className="email-list-scroll">
+      <div className="email-table-grid">
+        {emails.map((email) => (
+          <article key={email.id} className={className(email)}>
+            <div className="email-actions ">
+              <button
+                className={starClassName(email.isStarred)}
+                onClick={() => {
+                  onStarClick(email);
+                }}
+              >
+                <Star />
+              </button>
+
+              {email.isDraft && (
+                <button
+                  className="edit-email"
+                  onClick={() => onEditEmail(email.id)}
+                >
+                  <Edit />
+                </button>
+              )}
+            </div>
+            <Link to={`${location.pathname}/${email.id}`}>
+              <EmailPreview email={email} />
+            </Link>
             <button
-              className={starClassName(email.isStarred)}
+              className="remove-email "
               onClick={() => {
-                onStarClick(email);
+                onRemoveEmail(email.id);
               }}
             >
-              <Star />
+              X
             </button>
-
-            <button
-              className="edit-email"
-              onClick={() => onEditEmail(email.id)}
-            >
-              <Edit />
-            </button>
-          </div>
-          <Link to={`${location.pathname}/${email.id}`}>
-            <EmailPreview email={email} />
-          </Link>
-          <button
-            className="remove-email "
-            onClick={() => {
-              onRemoveEmail(email.id);
-            }}
-          >
-            X
-          </button>
-        </article>
-      ))}
+          </article>
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { eventBusService } from "../services/event-bus.service";
 
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 export function EmailFilter({ filterBy, onSetFilter }) {
   const [filterByToEdit, setFilterByToEdit] = useState(filterBy);
 

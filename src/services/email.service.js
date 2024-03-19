@@ -63,6 +63,7 @@ function getDefaultFilter(folder = "inbox") {
     folder: folder,
     txt: "",
     isRead: "all",
+    sentAt: "",
   };
 }
 function isEmptyDraft(email) {
@@ -78,6 +79,7 @@ function getFromParamsAndFolder(searchParams, folder) {
     folder: folder,
     txt: searchParams.get("txt") || "",
     isRead: searchParams.get("isRead") || "all",
+    sentAt: searchParams.get("sentAt") || "",
   };
   return filterBy;
 }
@@ -170,9 +172,10 @@ async function countUnreadEmails() {
 }
 
 function _filter(emails, filterBy) {
-  const { folder, txt, isRead } = filterBy;
+  const { folder, txt, isRead, sentAt } = filterBy;
   let filteredEmails = filterByText(emails, txt);
   filteredEmails = filterByReadStatus(filteredEmails, isRead);
+  filteredEmails = filterBySentAt(filteredEmails, sentAt);
   let filterParams = {};
   switch (folder) {
     case "inbox":
@@ -250,6 +253,20 @@ function filterByReadStatus(emails, isRead) {
     default:
       return emails;
   }
+}
+function filterBySentAt(emails, sentAt) {
+  if (sentAt) {
+    const date = new Date(sentAt);
+    return emails.filter((email) => {
+      const emailDate = new Date(email.sentAt);
+      return (
+        emailDate.getFullYear() === date.getFullYear() &&
+        emailDate.getMonth() === date.getMonth() &&
+        emailDate.getDate() === date.getDate()
+      );
+    });
+  }
+  return emails;
 }
 
 function filterByFolder(filteredEmails, filterParams) {

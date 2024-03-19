@@ -2,9 +2,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f4f4f4;
   padding: 10px;
   border-bottom: 1px solid #ccc;
+  border-radius: 5px 5px 0 0;
 }
 
 .email-filter,

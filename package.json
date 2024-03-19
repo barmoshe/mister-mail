@@ -12,12 +12,23 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mui/material": "^5.15.13",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.17",
+    "@mui/x-date-pickers": "^6.19.7",
+    "dayjs": "^1.11.10",
     "ghpages": "^0.0.10",
+    "install": "^0.13.0",
+    "lodash": "^4.17.21",
+    "npm": "^10.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",
-    "react-router-dom": "^6.22.1"
+    "react-router-dom": "^6.22.1",
+    "save": "^2.9.0",
+    "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

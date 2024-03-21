@@ -4,19 +4,47 @@
   grid-template-rows: min-content auto;
   height: 100vh;
 }
-
-@media (max-width: 768px) {
-  /* Styles for screens up to 768px wide (typically tablets and smaller devices) */
+/* Adjustments for mobile devices */
+@media only screen and (max-width: 768px) {
   .main-layout {
-    grid-template-columns: 1fr; /* Adjust layout for smaller screens */
-    grid-template-rows: min-content auto;
+    grid-template-columns: 1fr; /* Adjust the layout to a single column */
+    grid-template-rows: min-content auto min-content; /* Rearrange rows for better flow */
   }
-}
 
-@media (max-width: 576px) {
-  /* Styles for screens up to 576px wide (typically smartphones) */
-  .main-layout {
-    grid-template-columns: 1fr; /* Adjust layout for very small screens */
-    grid-template-rows: min-content auto;
+  .app-header {
+    grid-column: 1; /* Occupy the full width */
+    grid-row: 1; /* Move the header to the top */
+  }
+
+  .app-sidebar {
+    grid-column: 1; /* Occupy the full width */
+    grid-row: 3; /* Move the sidebar to the bottom */
+  }
+
+  .container {
+    padding: 0 10px; /* Add some horizontal padding */
+  }
+
+  .search-bar {
+    justify-content: space-between; /* Adjust alignment for better spacing */
+  }
+
+  .sidebar-actions {
+    text-align: center; /* Center the compose button */
+  }
+
+  .sidebar-folders {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(100px, 1fr)
+    ); /* Adjust folder layout */
+  }
+
+  .folder {
+    text-align: center; /* Center folder text */
+  }
+
+  .compose-btn {
+    width: 100%; /* Make compose button full-width */
   }
 }

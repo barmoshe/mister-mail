@@ -13,7 +13,8 @@
   transition: background-color 0.3s;
 }
 .email-preview-container:hover {
-  border: 1px solid #ccc;
+  border-bottom: 1px solid #e0e0e0; /* Add border on hover */
+  border-top: 1px solid #e0e0e0; /* Add border on hover */
 }
 .email-preview-container.unread {
   background-color: #f0f8ff; /* Light blue background for unread emails */

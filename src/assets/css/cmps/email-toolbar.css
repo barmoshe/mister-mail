@@ -2,9 +2,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-  border-radius: 5px 5px 0 0;
 }
 
 .email-filter,
@@ -14,22 +11,32 @@
 }
 
 .email-filter select,
+.email-filter input[type="date"],
 .email-sort select {
-  padding: 8px;
-  font-size: 14px;
+  margin-left: 10px; /* Adjust spacing between elements */
+  padding: 5px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 3px;
+}
+
+.email-filter span,
+.email-sort span {
+  margin-right: 10px; /* Adjust spacing between label and select */
 }
 
 .email-filter select:focus,
+.email-filter input[type="date"]:focus,
 .email-sort select:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-color: dodgerblue; /* Adjust focus color as needed */
 }
 
-.toolbar-divider {
-  margin: 0 10px;
-  height: 100%;
-  border-right: 1px solid #ccc;
+/* Toolbar style for email actions */
+.emails-actions {
+  padding: 10px;
+
+  border-bottom: 1px solid #e0e0e0;
+}
+.emails-actions:hover {
+  background-color: #f5f5f5;
 }

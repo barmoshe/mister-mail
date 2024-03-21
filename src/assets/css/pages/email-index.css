@@ -6,14 +6,12 @@
   height: 100%; /* Ensure the sidebar takes full height */
   display: grid;
   grid-template-columns: 1fr; /* One column */
-  gap: 1px; /* Spacing between grid items */
 }
 
 .email-list-container {
   display: grid;
   grid-template-columns: 1fr; /* One column */
   grid-auto-rows: min-content; /* Automatically size rows based on content */
-  gap: 2px; /* Spacing between grid items */
 }
 
 .progress-bar {

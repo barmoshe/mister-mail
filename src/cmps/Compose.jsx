@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { emailService } from "./../services/email.service.js";
 import { useSearchParams } from "react-router-dom";
 import { FaExpand, FaMinimize, FaCompress } from "react-icons/fa6";
@@ -8,11 +8,16 @@ export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [viewState, setViewState] = useState("normal");
   const [email, setEmail] = useState(emailService.getEmptyEmailDraft());
-  const currEmailId = useRef("new");
+  const emailRef = useRef("new");
 
   useEffect(() => {
-    if (searchParams.get("compose") && searchParams.get("compose") !== "new") {
+    if (
+      searchParams.get("compose") &&
+      searchParams.get("compose") !== "new" &&
+      searchParams.get("compose") !== email.id
+    ) {
       loadEmail();
+      emailRef.current = searchParams.get("compose");
     }
   }, [searchParams.get("compose")]);
 
@@ -30,25 +35,28 @@ export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEmail((prevEmail) => ({
-      ...prevEmail,
-      id: currEmailId.current,
-      [name]: value,
-    }));
-    onSaveEmail({ ...email, id: currEmailId.current, [name]: value });
+    setEmail((prevEmail) => ({ ...prevEmail, [name]: value }));
+    if (emailRef.current !== "pending")
+      onSaveEmail({ ...email, [name]: value });
   };
-  async function onSaveEmail(email) {
-    const savedEmail = await handleSaveEmail(email);
-    if (email.id === "new") {
-      currEmailId.current = savedEmail.id;
-    }
-  }
 
   const onSendEmail = (e) => {
     e.preventDefault();
     handleSendEmail(email);
     setEmail(emailService.getEmptyEmailDraft());
   };
+
+  async function onSaveEmail(email) {
+    try {
+      emailRef.current = "pending";
+      const savedEmail = await handleSaveEmail(email, emailRef.current);
+      setEmail((prevEmail) => ({ ...prevEmail, id: savedEmail.id }));
+      emailRef.current = savedEmail.id;
+      console.log("emailRef.current:", emailRef.current);
+    } catch (error) {
+      console.error("Error saving email:", error);
+    }
+  }
 
   const handleClose = () => {
     onCloseCompose();

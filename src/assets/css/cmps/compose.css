@@ -94,3 +94,28 @@
 .compose-form button[type="submit"]:hover {
   background-color: #218838;
 }
+/* Compose.css */
+
+/* Adjustments for smaller screens */
+@media screen and (max-width: 600px) {
+  .compose {
+    width: 100%;
+    height: auto;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .compose-header-actions button {
+    padding: 0.3rem;
+  }
+
+  .compose-form input[type="email"],
+  .compose-form input[type="text"],
+  .compose-form textarea {
+    padding: 0.3rem;
+    font-size: 14px; /* Adjust font size for better readability on smaller screens */
+  }
+}

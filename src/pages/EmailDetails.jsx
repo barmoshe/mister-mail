@@ -55,6 +55,9 @@ export function EmailDetails() {
           <p>email isRead {email.isRead ? "Read" : "Unread"}</p>
           <p>email isStarred {email.isStarred ? "Starred" : "Not Starred"}</p>
           <p>email removedAt {email.removedAt ? "Removed" : "Not Removed"}</p>
+          <p>
+            email location {email.lat} , {email.lng}
+          </p>
         </div>
       </div>
       <div className="email-details-footer">

@@ -66,7 +66,13 @@ export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
   // Function to send email
   const onSendEmail = (e) => {
     e.preventDefault();
-    handleSendEmail(email);
+    if (includeLocation)
+      handleSendEmail({
+        ...email,
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+      });
+    else handleSendEmail(email);
     setEmail(emailService.getEmptyEmailDraft());
   };
 

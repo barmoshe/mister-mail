@@ -94,6 +94,8 @@ function getEmptyEmailDraft() {
     subject: "",
     body: "",
     isDraft: true,
+    lat: null,
+    lng: null,
   };
 }
 function _createEmails() {

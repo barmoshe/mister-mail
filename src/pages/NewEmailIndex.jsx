@@ -64,7 +64,6 @@ export function NewEmailIndex() {
 
     setSearchParams(newSearchParams);
     loadEmails();
-    console.table(filterBy);
   }, [filterBy, sortBy]);
 
   // Effect for toggling composeMode and updating searchParams

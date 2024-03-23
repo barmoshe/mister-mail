@@ -11,7 +11,7 @@ import { IoClose } from "react-icons/io5";
 import GoogleMapReact from "google-map-react"; // Import Google Map React component
 
 export function Compose({ handleSendEmail, onCloseCompose, handleSaveEmail }) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [viewState, setViewState] = useState("normal");
   const [email, setEmail] = useState(emailService.getEmptyEmailDraft());
   const [userLocation, setUserLocation] = useState(null); // State variable to hold user's location

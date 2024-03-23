@@ -34,10 +34,6 @@ export function EmailDetails() {
     setUnreadInbox(unreadCount);
   }
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   if (!email) return <div>Loading..</div>;
 
   return (
@@ -92,7 +88,7 @@ export function EmailDetails() {
         </div>
       </div>
       <footer className="email-details-footer">
-        <button onClick={handleBack}>Back</button>
+        <button onClick={() => window.history.back()}>Back</button>
       </footer>
     </section>
   );

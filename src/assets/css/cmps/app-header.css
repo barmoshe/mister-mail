@@ -1,6 +1,6 @@
 .app-header {
   display: grid;
-  grid-template-columns: auto 1fr auto; /* Three columns: logo, search bar, icons */
+  grid-template-columns: auto 1fr; /* Two columns: menu/logo, search bar/icons */
   align-items: center; /* Align items vertically */
   grid-column: 1/-1; /* Extend across all columns */
   grid-row: 1; /* Occupies first row */
@@ -25,31 +25,40 @@
   height: auto;
 }
 
+.header-right-side {
+  display: flex; /* Align search bar and icons horizontally */
+  align-items: center; /* Align items vertically */
+  flex-grow: 1; /* Grow to fill remaining space */
+}
+
 .search-bar {
-  grid-column: 2; /* Search bar spans second column */
-  display: flex; /* Use flexbox */
-  justify-content: center; /* Center content horizontally */
-  position: relative; /* Position input relative to allow absolute positioning of icon */
+  flex-grow: 1; /* Grow to fill remaining space */
 }
 
 .search-bar input[type="text"] {
-  width: 75%; /* Occupy full width */
+  width: 100%; /* Occupy full width */
   padding: 8px; /* Adjust padding */
   border-radius: 20px; /* Rounded corners */
   border: 1px solid #ccc; /* Add border */
   outline: none; /* Remove default focus outline */
 }
-.header-right-side {
+
+.icons-container {
   display: flex; /* Align icons horizontally */
-  justify-content: flex-end; /* Align icons to the right */
   gap: 10px; /* Spacing between icons */
 }
-.search-bar input[type="text"]:hover {
-  background-color: #f0f0f0; /* Change background color on hover */
+
+.menu-icon {
+  order: 1; /* Move menu icon to the top */
 }
 
-.header-icon:hover {
-  background-color: #bdbaba;
+@media only screen and (max-width: 768px) {
+  .header-right-side {
+    flex-direction: column; /* Stack search bar and icons vertically */
+    align-items: flex-start; /* Align items to the start */
+  }
 
-  cursor: pointer;
+  .icons-container {
+    margin-top: 10px; /* Add margin between search bar and icons */
+  }
 }

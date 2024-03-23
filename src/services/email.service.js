@@ -15,6 +15,7 @@ export const emailService = {
   getDefaultFilter,
   getFromParamsAndFolder,
   countUnreadEmails,
+  getEmailStats,
 };
 const STORAGE_KEY = "email_db";
 _createEmails();
@@ -315,4 +316,36 @@ function filterByFolder(filteredEmails, filterParams) {
     // Default case: return unfiltered emails
     return true;
   });
+}
+
+async function getEmailStats() {
+  try {
+    const emails = await storageService.query(STORAGE_KEY);
+
+    // Calculate statistics
+    const totalEmails = emails.length;
+    const totalRead = emails.filter((email) => email.isRead).length;
+    const totalUnread = totalEmails - totalRead;
+    const totalStarred = emails.filter((email) => email.isStarred).length;
+    const totalSent = emails.filter(
+      (email) => email.from === loggedInUser.email
+    ).length;
+
+    const totalDrafts = emails.filter((email) => email.isDraft).length;
+    const totalTrash = emails.filter((email) => email.removedAt).length;
+
+    // Construct and return the statistics object
+    return {
+      Total: totalEmails,
+      Read: totalRead,
+      Unread: totalUnread,
+      Starred: totalStarred,
+      Sent: totalSent,
+      Drafts: totalDrafts,
+      Trash: totalTrash,
+    };
+  } catch (error) {
+    console.error("Error getting email statistics:", error);
+    throw error; // Re-throw the error to handle it in the caller component
+  }
 }

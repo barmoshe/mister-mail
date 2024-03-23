@@ -226,7 +226,7 @@ export function NewEmailIndex() {
   };
 
   // Conditional rendering for Outlet or Email Index section
-  if (params.emailId)
+  if (params.emailId || location.pathname.includes("charts"))
     return (
       <>
         <Outlet />

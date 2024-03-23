@@ -42,12 +42,14 @@ export function AppHeader() {
       <div className="header-right-side">
         {icons.map((icon, index) => {
           return (
-            <img
-              src={icon.src}
-              alt={icon.alt}
-              key={index}
-              className="header-icon"
-            />
+            <NavLink to="/emails/charts" key={index}>
+              <img
+                src={icon.src}
+                alt={icon.alt}
+                key={index}
+                className="header-icon"
+              />
+            </NavLink>
           );
         })}
       </div>

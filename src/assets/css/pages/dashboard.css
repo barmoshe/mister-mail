@@ -1,0 +1,25 @@
+.dashboard-page {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+}
+
+.chart-container {
+  margin-top: 20px;
+}
+
+.return-btn {
+  background-color: #f1f3f4;
+  color: #1a73e8;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.return-btn:hover {
+  background-color: #dfe3e6;
+}

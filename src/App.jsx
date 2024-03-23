@@ -9,6 +9,7 @@ import { createContext, useState } from "react";
 import { HomePage } from "./pages/HomePage.jsx";
 // import { EmailIndex } from "./pages/EmailIndex.jsx";
 import { EmailDetails } from "./pages/EmailDetails.jsx";
+import { DashboardPage } from "./pages/DashboardPage.jsx";
 import { NewEmailIndex } from "./pages/NewEmailIndex.jsx";
 import { UserMsg } from "./cmps/UserMsg.jsx";
 
@@ -34,6 +35,7 @@ export function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<h1>about</h1>} />
+                <Route path="/emails/charts" element={<DashboardPage />} />
                 <Route
                   path="/emails"
                   element={<Navigate to="/emails/inbox" replace />}

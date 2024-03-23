@@ -6,11 +6,11 @@ import {
   useLocation,
 } from "react-router-dom";
 import { emailService } from "./../services/email.service.js";
+import { utilService } from "../services/util.service.js";
 import {
   eventBusService,
   showSuccessMsg,
   showErrorMsg,
-  showUserMsg,
 } from "../services/event-bus.service.js";
 
 import { EmailList } from "./../cmps/EmailList.jsx";
@@ -91,6 +91,7 @@ export function NewEmailIndex() {
       )
         delete cleanFilter[key];
     }
+    delete cleanFilter["folder"];
     return { ...cleanFilter, sortBy };
   }
 
@@ -157,9 +158,11 @@ export function NewEmailIndex() {
     savedDraft.sentAt = Date.now();
     if (savedDraft.id === "new" || !savedDraft.id) {
       try {
+        console.log("-----saveNew------");
         const newDraft = await emailService.createDraft(savedDraft);
-        if (filterBy.folder === "drafts")
+        if (filterBy.folder === "drafts") {
           setEmails((prevEmails) => [...prevEmails, newDraft]);
+        }
         setComposeMode(newDraft.id);
         showSuccessMsg("Email draft saved successfully");
         return newDraft;
@@ -169,6 +172,7 @@ export function NewEmailIndex() {
       }
     } else {
       try {
+        console.log("-----saveOld------");
         const addedEmail = await emailService.save(savedDraft);
         if (filterBy.folder === "drafts")
           setEmails((prevEmails) =>
@@ -177,7 +181,7 @@ export function NewEmailIndex() {
             )
           );
         setComposeMode(addedEmail.id);
-        showSuccessMsg("Email draft updated successfully");
+        showSuccessMsg(`${utilService.getCurrentTime()} - Email draft updated`);
         return addedEmail;
       } catch (err) {
         showErrorMsg("Failed to update email draft");

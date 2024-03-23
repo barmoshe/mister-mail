@@ -2,6 +2,7 @@ export const utilService = {
   makeId,
   saveToStorage,
   loadFromStorage,
+  getCurrentTime,
 };
 
 function makeId(length = 5) {
@@ -48,4 +49,12 @@ export function isEqual(obj1, obj2) {
 
 export function isObject(obj) {
   return obj !== null && typeof obj === "object";
+}
+
+function getCurrentTime() {
+  const now = new Date();
+  const hours = now.getHours().toString().padStart(2, "0"); // Get hours and ensure it's two digits
+  const minutes = now.getMinutes().toString().padStart(2, "0"); // Get minutes and ensure it's two digits
+  const seconds = now.getSeconds().toString().padStart(2, "0"); // Get seconds and ensure it's two digits
+  return `${hours}:${minutes}:${seconds}`;
 }

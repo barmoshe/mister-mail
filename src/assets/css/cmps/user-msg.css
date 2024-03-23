@@ -50,3 +50,23 @@
 .user-msg-content button i {
   font-style: normal;
 }
+
+/* UserMsg.css */
+
+/* Adjustments for smaller screens */
+@media screen and (max-width: 600px) {
+  .user-msg {
+    bottom: 10px;
+    right: 10px;
+    width: 250px;
+    padding: 8px;
+  }
+
+  .user-msg-content p {
+    font-size: 12px; /* Adjust font size for better readability on smaller screens */
+  }
+
+  .user-msg-content button {
+    font-size: 12px; /* Adjust button font size */
+  }
+}

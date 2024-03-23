@@ -22,7 +22,7 @@ export function UserMsg() {
   if (!msg) return null;
 
   return (
-    <div className={"user-msg " + msg.type}>
+    <div className={`user-msg ${msg.type}`}>
       <div className="user-msg-content">
         <p>{msg.txt}</p>
         <button onClick={onCloseMsg}>

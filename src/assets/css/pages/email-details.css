@@ -1,38 +1,62 @@
 .email-details {
   max-width: 600px;
   margin: 0 auto;
-  padding: 10px; /* Add padding */
-  border-radius: 10px 0 0 10px;
-  background-color: rgba(255, 255, 255);
-  height: 100%; /* Ensure the sidebar takes full height */
-  display: grid;
-  min-width: 80svw; /* Ensure the sidebar takes full height */
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.email-details-toolbar {
+.email-details-header {
   margin-bottom: 20px;
+}
+
+.email-details-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.email-meta {
+  margin-bottom: 10px;
+}
+
+.email-meta p {
+  margin: 5px 0;
 }
 
 .email-details-content {
   margin-bottom: 20px;
 }
 
-.email-details-header h2 {
-  margin-bottom: 10px;
+.email-body {
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-.email-details-meta {
-  margin-bottom: 10px;
+.email-status {
+  margin-top: 20px;
 }
 
-.email-details-meta p {
+.email-status p {
   margin: 5px 0;
+}
+
+.email-status strong {
+  margin-right: 5px;
+}
+
+.draft {
+  color: #f39c12;
+}
+
+.email-details-footer {
+  text-align: right;
 }
 
 .email-details-footer button {
   padding: 10px 20px;
   background-color: #007bff;
-  color: #fff;
+  color: #ffffff;
   border: none;
   border-radius: 5px;
   cursor: pointer;

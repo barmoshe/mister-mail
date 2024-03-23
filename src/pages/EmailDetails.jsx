@@ -1,9 +1,9 @@
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-
 import { emailService } from "../services/email.service";
 import { Context } from "../App";
+import GoogleMapReact from "google-map-react"; // Import Google Map React component
+import { FaLocationArrow } from "react-icons/fa6";
 
 export function EmailDetails() {
   const [email, setEmail] = useState(null);
@@ -19,50 +19,86 @@ export function EmailDetails() {
     try {
       const email = await emailService.getById(params.emailId);
       setEmail(email);
+      // Mark email as read and update unread count
       email.isRead = true;
       await emailService.save(email);
-      onSetUnreadInbox();
+      updateUnreadInbox();
     } catch (err) {
       navigate(-1);
-      console.log("Error in loadEmail", err);
+      console.error("Error in loadEmail", err);
     }
   }
-  async function handleBack() {
+
+  async function updateUnreadInbox() {
+    const unreadCount = await emailService.countUnreadEmails();
+    setUnreadInbox(unreadCount);
+  }
+
+  const handleBack = () => {
     navigate(-1);
-  }
-  async function onSetUnreadInbox() {
-    const unreadInbox = await emailService.countUnreadEmails();
-    setUnreadInbox(unreadInbox);
-  }
+  };
 
   if (!email) return <div>Loading..</div>;
 
   return (
     <section className="email-details">
-      <div className="email-details-toolbar"></div>
-      <div className="email-details-content">
-        <div className="email-details-header">
-          <h2>{email.subject}</h2>
-          <div className="email-details-meta">
-            <p>Sent At: {new Date(email.sentAt).toLocaleString()}</p>
-            <p>From: {email.from}</p>
-          </div>
-        </div>
-        <div className="email-details-body">
-          <p>{email.body}</p>
-          <p>{email.isDraft && "Draft"}</p>
-          <p>email id {email.id}</p>
-          <p>email isRead {email.isRead ? "Read" : "Unread"}</p>
-          <p>email isStarred {email.isStarred ? "Starred" : "Not Starred"}</p>
-          <p>email removedAt {email.removedAt ? "Removed" : "Not Removed"}</p>
+      <header className="email-details-header">
+        <h1>{email.subject}</h1>
+        <div className="email-meta">
           <p>
-            email location {email.lat} , {email.lng}
+            <strong>Sent At:</strong> {new Date(email.sentAt).toLocaleString()}
+          </p>
+          <p>
+            <strong>From:</strong> {email.from}
           </p>
         </div>
+      </header>
+      <div className="email-details-content">
+        <div className="email-body">
+          <p>{email.body}</p>
+          <p>{email.isDraft && <span className="draft">Draft</span>}</p>
+          <div className="email-status">
+            <p>
+              <strong>Email ID:</strong> {email.id}
+            </p>
+            <p>
+              <strong>Status:</strong> {email.isRead ? "Read" : "Unread"}
+            </p>
+            <p>
+              <strong>Starred:</strong> {email.isStarred ? "Yes" : "No"}
+            </p>
+            <p>
+              <strong>Removed:</strong> {email.removedAt ? "Yes" : "No"}
+            </p>
+            {email.lat && email.lng && (
+              <div style={{ height: "200px", width: "100%" }}>
+                <GoogleMapReact
+                  bootstrapURLKeys={{
+                    key: "AIzaSyAlpWHRRJs_uYLdJsqSwi4QDT7geImVQVs",
+                  }}
+                  center={{ lat: email.lat, lng: email.lng }} // Center the map at email's location
+                  zoom={15}
+                >
+                  {/* Marker to show email's location */}
+                  <Marker
+                    lat={email.lat}
+                    lng={email.lng}
+                    text={<FaLocationArrow />}
+                  />
+                </GoogleMapReact>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-      <div className="email-details-footer">
+      <footer className="email-details-footer">
         <button onClick={handleBack}>Back</button>
-      </div>
+      </footer>
     </section>
   );
 }
+
+// Marker component for displaying location on the map
+const Marker = ({ text }) => (
+  <div style={{ color: "red", fontSize: "2rem" }}>{text}</div>
+);
